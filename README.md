@@ -1,5 +1,3 @@
-
-----
 ## cloud_demo
 
 > 簡單的購物車 + 部落格 + API網站demo
@@ -7,7 +5,6 @@
 * 後端使用node.js + Express + MongoDB(mongoose)
 * 前端使用Bootstrap4.4.1
 
-----
 ## 使用方法(環境須先確認port3000可作為伺服監聽port)
 
 * 安裝node.jsv12.14.0 + npm
@@ -34,8 +31,6 @@ $ node init.js
 $ node app.js
 ```
 
-
-----
 ## 功能介紹
 * 登入、登出、帳號資訊(暱稱、自介)、帳號頁面、個人首頁
 * 部落格CRUD功能
@@ -43,7 +38,6 @@ $ node app.js
 * 註冊活動、填自介活動、po文活動
 * 氣象局API使用與確認資訊活動功能
 
-----
 ## 其他
 * 使用Promise語法處理mongoose同步問題、以求順序正確及簡化語法
 * 由於氣象局API需要key，相關細節請至/keyy.js確認
@@ -51,8 +45,6 @@ $ node app.js
 * 使用UTC方式傳輸時間再至客戶端解析，以簡化時區、日光節約時間問題
 
 
-
-----
 ## npm modules use:
 * [body-parser](https://www.npmjs.com/package/body-parser)
 * [cors](https://www.npmjs.com/package/cors)
