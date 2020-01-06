@@ -1,0 +1,81 @@
+<% function UTC(x){ %>
+<%     if(x){ %>
+<%         return x.getTime() %>
+<%     } %>
+<% } %>
+
+<% var uid = null %>
+<% var isUidFinished = -1 %>
+<% if(currentUser){ %>
+	<% uid = currentUser._id %>
+<% } %>
+
+
+<%- include("../partials/header") %>
+
+<div class="container"><list>
+	
+	<% allevents.forEach(function(event){ %>
+	    <div class="jumbotron">
+			<h1 class="display-4"><%= event.name %></h1>
+			<p class="lead"><%= event.description %></p>
+			<hr class="my-4">
+			<% if(event.reward_cash){ %>
+				<p>
+				    獎勵金額: <%= event.reward_cash %>
+			    </p>
+			<% } %>
+			<p>
+				<% if(event.reward_treasure.length >0 ){ %>
+					獎勵寶物:
+					<% event.reward_treasure.forEach((el)=>{ %>
+						<% for(var i=0; i<treasures.length; i++){ %>
+							<% if(treasures[i].id.toString() === el.id.toString() ){ %>
+								<div class="row btn-outline-primary href" onclick="location.href='/treasures/<%= treasures[i]._id %>'" >
+									<div class="col-md-5 text-center align-self-center">
+										<img src="<%= treasures[i].image %>">
+									</div>
+									<div class="col-md-2 align-self-center">
+										<%= treasures[i].name %>
+									</div>
+									<div class="col-md-4 align-self-center">
+										<%= treasures[i].description %>
+									</div>
+									<div class="col-md-1 align-self-center">
+										   數量:<%= el.qty %>
+									</div>
+								</div>
+								<% break; %>
+							<% } %>
+						<% } %>
+					<% }) %>
+				<% } %>
+			</p>
+			<p><small>完成人數:<%= event.finish_uid.length %>
+				<% isUidFinished = event.finish_uid.indexOf(uid) %>
+				<% if(isUidFinished >= 0){ %>
+				    <span class="alert alert-success"><strong>已完成</strong></span>
+				<% } %>
+			</small></p>
+			<a class="btn btn-primary btn-lg" href="/events/<%= event._id %>">Learn more</a>
+		</div>
+
+	<% }); %>
+	
+</list>
+</div>
+
+
+
+<%- include("../partials/footer") %>
+
+
+
+
+
+
+
+
+
+
+    

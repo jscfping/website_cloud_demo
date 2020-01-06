@@ -1,0 +1,30 @@
+<%- include("../partials/header") %>
+
+
+<div class="container"><list>
+
+	<div class="card">
+		<h3 class="card-header">編輯基本資料</h3>
+			
+		<div class="card-body">
+
+			<h5>帳號: <%= user.username %></h5>
+			<form action="/user?_method=put" method="POST">
+				<h6>暱稱:</h6>
+				<input type="text" name=user[nickname] value="<%= user.nickname %>" class="form-control">
+				<h6 class="card-text">自我介紹:</h6>
+					<% if(!user.desc){ %>
+						<% user.desc = "填一點自我介紹吧..." %>
+					<% } %>
+					<textarea name=user[desc] class="form-control" rows="3"><%= user.desc %></textarea>
+				<button type="submit" class="btn btn-primary">編輯完成</button>
+			</form>
+
+		</div>
+			
+	</div>
+
+</list>
+</div>
+
+<%- include("../partials/footer") %>

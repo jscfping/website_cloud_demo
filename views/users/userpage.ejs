@@ -1,0 +1,116 @@
+
+
+
+
+<% var uid = null; %>
+<% if(currentUser){ %>
+<%     uid = currentUser._id.toString(); %>
+<% } %>
+
+<% function UTC(x){ %>
+	<%     if(x){ %>
+	<%         return x.getTime() %>
+	<%     } %>
+<% } %>
+
+
+
+<%- include("../partials/header") %>
+
+<div class="container"><list>
+
+	<div class="card">
+		<h3 class="card-header"><%= user.nickname %><small>(<%= user.username %>)</small></h3>
+			
+		<div class="card-body">
+			<p class="card-text">
+				<% if(uid === user._id.toString()){ %>
+					<a href="/user/edit" class="btn btn-info">編輯個人資料</a>
+				<% } %>
+			</p>
+            <p class="card-text">自我介紹:
+				<textarea name="article[description]" class="form-control" rows="3" readonly="readonly"><%= user.desc %></textarea>
+			</p>
+
+			<div class="card alert-success">
+				<h3 class="card-header">擁有寶物</h3>
+				<div class="card-body">
+					<% user.treasures.forEach(function(el){ %>
+						<% for(var i=0; i<foundAllTreasures.length; i++){ %>
+							<% if(foundAllTreasures[i]._id.toString() === el.id.toString() ){ %>
+								<div class="row btn-outline-primary href" onclick="location.href='/treasures/<%= el.id %>'" >
+									<div class="col-md-5 text-center align-self-center">
+										<img src="<%= foundAllTreasures[i].image %>">
+									</div>
+									<div class="col-md-2 align-self-center">
+										<%= foundAllTreasures[i].name %>
+									</div>
+									<div class="col-md-4 align-self-center">
+										<%= foundAllTreasures[i].description %>
+									</div>
+									<div class="col-md-1 align-self-center">
+										   數量:<%= el.qty %>
+									</div>
+								</div>
+								<% break; %>
+							<% } %>
+						<% } %>
+					<% }) %>
+
+				</div>
+			</div>
+
+
+			<div class="card alert-success">
+				<h3 class="card-header">擁有文章</h3>
+				<div class="card-body">
+			<% user.articles.forEach(function(el){ %>
+				<h6>
+					<% for(var i=0; i<foundUserArticles.length; i++){ %>
+						<% if(foundUserArticles[i]._id.toString() === el.toString() ){ %>
+
+							<div class="card">
+								<h5 class="card-header"><%= foundUserArticles[i].title %></h5>
+								<div class="card-body">
+									<p class="card-text"><%= foundUserArticles[i].description %></p>
+									<div class="card-text"><small>發佈時間:<UTC><%= UTC(foundUserArticles[i].created) %></UTC></small></div>
+									<% if(foundUserArticles[i].isedited){ %>
+										<div class="card-text"><small>最後編輯:<UTC><%= UTC(foundUserArticles[i].edited) %></UTC></small></div>
+									<% } %>
+									<% if(currentUser && (currentUser._id.equals(foundUserArticles[i].authorid._id))){ // better??? %>
+										<a href="/myarticles/<%= foundUserArticles[i]._id %>/edit" class="btn btn-info btn-sm">編輯文章</a>
+										<form action="/myarticles/<%= foundUserArticles[i]._id %>?_method=delete" method="POST">
+											<button type="submit" class="btn btn-danger btn-sm">刪除文章</button>
+										</form>
+									<% }; %>
+								</div>
+									
+							</div>
+							<!-- comments -->
+							<% break; %>
+						<% } %>
+					<% } %>
+				</h6>
+			<% });%>
+				</div>
+			</div>
+
+
+
+			
+
+
+
+
+
+			
+		</div>
+			
+	</div>
+
+
+
+</list>
+</div>
+
+<%- include("../partials/footer") %>

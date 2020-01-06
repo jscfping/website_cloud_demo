@@ -1,0 +1,68 @@
+<% function UTC(x){ %>
+<%     if(x){ %>
+<%         return x.getTime() %>
+<%     } %>
+<% } %>
+
+
+<% var uid = null %>
+<% var isUidFinished = -2 %>
+<% if(currentUser){ %>
+	<% uid = currentUser._id %>
+    <% isUidFinished = event.finish_uid.indexOf(uid) %>
+<% } %>
+
+<% var dataCWBApi = ["", "", ""] %>
+<% dataCWBApi[0] = extra["records"]["location"][0]["locationName"] + extra["records"]["location"][0]["weatherElement"][0]["time"][0]["startTime"]; %>
+<% dataCWBApi[1] = "溫度: " + extra["records"]["location"][0]["weatherElement"][2]["time"][0]["parameter"]["parameterName"] + "~ " + extra["records"]["location"][0]["weatherElement"][4]["time"][0]["parameter"]["parameterName"] + "℃ 降雨機率:" + extra["records"]["location"][0]["weatherElement"][1]["time"][0]["parameter"]["parameterName"] + "%"; %>
+<% dataCWBApi[2] = extra["records"]["location"][0]["weatherElement"][0]["time"][0]["parameter"]["parameterName"] +	", " + extra["records"]["location"][0]["weatherElement"][3]["time"][0]["parameter"]["parameterName"]; %>
+
+
+
+<%- include("../partials/header") %>
+
+<div class="container">
+    
+	    <h6>活動名稱: <%= event.name %></h6>
+	    <h6>活動描述: <%= event.description %></h6>
+	    <h6>獎勵金額: <%= event.reward_cash %></h6>
+		<h6>趕快來完成活動吧~~~~~</h6>
+		<h6>以下為氣象局拉到的API資料:</h6>
+		<div class="card" style="width: 18rem;">
+			<div class="card-body">
+			  <h5 class="card-title"><%= dataCWBApi[0] %></h5>
+			  <h6 class="card-subtitle mb-2 text-muted"><%= dataCWBApi[1] %></h6>
+			  <p class="card-text"><%= dataCWBApi[2] %></p>
+
+			</div>
+		  </div>
+
+	    <% if(isUidFinished >= 0){ %>
+	    <h6><strong>恭喜~~~您已完成了此活動~~~~</strong></h6>
+	    <% }else if(isUidFinished === (-1)){ %>
+			<form action="/events/<%= event._id %>" method="POST">
+				<h6>告訴本雲寶寶，這個API預報最低溫為多少:</h6>
+				<input type="number" name="eventData[value0]" placeholder="title">
+				<button class="btn btn-primary" type="submit">送出!</button>
+	        </form>
+		<% } %>
+		<hr>
+		<button class="btn btn-info" onclick="location.href='/events/'">回活動頁</button>
+	
+	
+</div>
+
+
+
+<%- include("../partials/footer") %>
+
+
+
+
+
+
+
+
+
+
+    

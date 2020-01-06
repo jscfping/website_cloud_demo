@@ -1,0 +1,62 @@
+<% function UTC(x){ %>
+<%     if(x){ %>
+<%         return x.getTime() %>
+<%     } %>
+<% } %>
+
+<% //sort %>
+	<% alltreasures = alltreasures.sort(function (a, b) { %>
+    <%     return (a.id > b.id ? 1 : -1); %>
+<% }); %>
+
+
+<%- include("../partials/header") %>
+
+<div class="container">
+	<div class="row">
+	<% alltreasures.forEach(function(treasure){ %>
+		<div class="card col-sm-12 col-lg-5">
+			<div class="row justify-content-center">
+			    <img src="<%= treasure.image %>">
+		    </div>
+		    <h5 class="card-header"><%= treasure.name %></h5>
+			<div class="card-body">
+				<p class="card-text"><span class="alert alert-primary">描述</span> <%= treasure.description %></p>
+				<p class="card-text"><span class="alert alert-primary">價格</span> <%= treasure.price %></p>
+				<p class="card-text"><span class="alert alert-primary">庫存</span> <%= treasure.stocks %></p>
+				<p class="card-text"">
+					<button class="btn btn-info" onclick="location.href='/treasures/<%= treasure._id %>'">查看詳情</button>
+				</p>
+				<% if(currentUser){ %>
+					<form action="/shoppinglist/<%= treasure._id %>?_method=PUT" method="POST">
+						<div class="form-group">
+							<input type="number" name="shoppinglist[qty]" value="0">
+							<button type="submit" class="btn btn-success">放到購物車內</button>
+						</div>
+					</form>
+				<% } %>
+				
+
+			</div>
+			    
+		</div>
+	    <!-- comments -->
+	<% }); %>
+	
+	</div>
+</div>
+
+
+
+<%- include("../partials/footer") %>
+
+
+
+
+
+
+
+
+
+
+    

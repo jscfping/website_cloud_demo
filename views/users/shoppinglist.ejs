@@ -1,0 +1,70 @@
+<% var costsum = 0; %>
+<% var costone = []; %>
+
+<%- include("../partials/header") %>
+
+<% var sum = 0 %>
+
+<% function getValue(x){ %>
+<%     if(x){ %>
+<%	       return Number(x); %>
+<%     }else{ %>
+<%	       return Number(0); %>
+<%	   } %>
+<% } %>
+
+<div class="container">
+
+	<div class="card">
+		<h3 class="card-header">這是您的採購清單</h3>
+		<div class="card-body">
+
+            <% for(var i=0; i<userdata.shoppinglist.length; i++){ %>
+	            <% var qty = getValue(userdata.shoppinglist[i].qty) %>
+	            <% var price = getValue(userdata.shoppinglist[i].property.price) %>
+	            <% var subsum = qty * price %>
+	            <% sum += subsum %>
+				<list>
+					<div class="row btn-outline-primary href" onclick="location.href='/treasures/<%= userdata.shoppinglist[i].id %>'" >
+						<div class="col-md-4 text-center align-self-center">
+							<img src="<%= userdata.shoppinglist[i].property.image %>">
+						</div>
+						<div class="col-md-1 align-self-center">
+							<%= userdata.shoppinglist[i].property.name %>
+						</div>
+						<div class="col-md-2 align-self-center">
+							<%= userdata.shoppinglist[i].property.description %>
+						</div>
+						<div class="col-md-1 text-right align-self-center">
+							數量:<%= qty %>
+						</div>
+						<div class="col-md-2 text-right align-self-center">
+							單價:<%= price %>
+						</div>
+						<div class="col-md-2 text-right align-self-center">
+							複價:<%= subsum %>
+						</div>
+		
+					</div>
+				</list>
+				<p>
+				    <form action="/shoppinglist/<%= userdata.shoppinglist[i].id %>?_method=DELETE" method="POST">
+				    	<input type="number" name="shoppinglist[qty]"  value="0" >
+				    	<button type="submit" class="btn btn-info">這些還回去架上</button>
+				    </form>
+				</p>
+				<hr>
+			<% } %>
+			<div class="text-right">
+            <h1>合計:<%= sum %></h1>
+			<form action="/checkout" method="POST">
+				<button type="submit" class="btn btn-success">結帳</button>
+			</form>
+			</div>
+
+		</div>
+	</div>
+	
+</div>
+
+<%- include("../partials/footer") %>

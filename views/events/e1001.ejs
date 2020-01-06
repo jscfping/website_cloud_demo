@@ -1,0 +1,87 @@
+<% function UTC(x){ %>
+<%     if(x){ %>
+<%         return x.getTime() %>
+<%     } %>
+<% } %>
+
+
+<% var uid = null %>
+<% var isUidFinished = -2 %>
+<% if(currentUser){ %>
+	<% uid = currentUser._id %>
+    <% isUidFinished = event.finish_uid.indexOf(uid) %>
+<% } %>
+
+
+
+
+
+
+
+<%- include("../partials/header") %>
+
+<div class="container">
+    
+	    <h6>活動名稱: <%= event.name %></h6>
+	    <h6>活動描述: <%= event.description %></h6>
+
+			<div class="card">
+				<h3 class="card-header">獎勵寶物</h3>
+				<div class="card-body">
+					<% event.reward_treasure.forEach((el)=>{ %>
+
+						<% for(var i=0; i<foundAllTreasures.length; i++){ %>
+							<% if(foundAllTreasures[i].id.toString() === el.id.toString() ){ %>
+								<div class="row btn-outline-primary href" onclick="location.href='/treasures/<%= foundAllTreasures[i]._id %>'" >
+									<div class="col-md-5 text-center align-self-center">
+										<img src="<%= foundAllTreasures[i].image %>">
+									</div>
+									<div class="col-md-2 align-self-center">
+										<%= foundAllTreasures[i].name %>
+									</div>
+									<div class="col-md-4 align-self-center">
+										<%= foundAllTreasures[i].description %>
+									</div>
+									<div class="col-md-1 align-self-center">
+										   數量:<%= el.qty %>
+									</div>
+								</div>
+								<% break; %>
+							<% } %>
+						<% } %>
+
+
+
+					<% }) %>
+				</div>
+			</div>
+
+        <h6>趕快來領取九星大禮吧~~~~</h6>
+
+	    <% if(isUidFinished >= 0){ %>
+	    <h6><strong>恭喜~~~您已獲得了最新最潮最哈囉的九星大禮www~~~~</strong></h6>
+	    <% }else if(isUidFinished === (-1)){ %>
+			<form action="/events/<%= event._id %>" method="POST">
+				<button class="btn btn-primary" type="submit">領取</button>
+	        </form>
+		<% } %>
+		<hr>
+		<button class="btn btn-info" onclick="location.href='/events/'">回活動頁</button>
+	
+	
+</div>
+
+
+
+<%- include("../partials/footer") %>
+
+
+
+
+
+
+
+
+
+
+    

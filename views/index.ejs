@@ -1,0 +1,53 @@
+
+<% var eventid = ["","",""]; %>
+<% for(var i=0; i<events.length; i++){ %>
+<%     if(events[i].eid === "1001"){ %>
+<%         eventid[0] = events[i]._id; %>
+<%     } %>
+<%     if(events[i].eid === "0101"){ %>
+<%         eventid[1] = events[i]._id; %>
+<%     } %>
+<%     if(events[i].eid === "0002"){ %>
+<%         eventid[2] = events[i]._id; %>
+<%     } %>
+<% } %>
+
+
+<%- include("partials/header") %>
+
+
+<div class="container">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+		<ol class="carousel-indicators">
+		  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+		  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+		  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+		</ol>
+		<div class="carousel-inner">
+		  <div class="carousel-item active">
+			  
+			<a href="events/<%= eventid[0] %>"><img src="/images/banners/banner01.png" class="d-block w-100" alt="..."></a>
+		  </div>
+		  <div class="carousel-item">
+			<a href="events/<%= eventid[1] %>"><img src="/images/banners/banner02.png" class="d-block w-100" alt="..."></a href="events/<%= eventid[0] %>">
+		  </div>
+		  <div class="carousel-item">
+			<a href="events/<%= eventid[2] %>"><img src="/images/banners/banner03.png" class="d-block w-100" alt="..."></a href="events/<%= eventid[0] %>">
+		  </div>
+		</div>
+		<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		  </a>
+		  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
+	<hr>
+	<h5>此網站為使用node.js+Express搭配MongoDB(mongoose)+Bootstrap創建之簡易購物車、部落格、API網站</h5>
+	<em>*資料庫資料可能不定時刷新重置</em>
+
+</div>
+    
+<%- include("partials/footer") %>

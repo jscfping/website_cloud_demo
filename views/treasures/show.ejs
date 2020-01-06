@@ -1,0 +1,59 @@
+<% function UTC(x){ %>
+<%     if(x){ %>
+<%         return x.getTime() %>
+<%     } %>
+<% } %>
+
+
+<%- include("../partials/header") %>
+
+<div class="container"><list>
+    <div class="card">
+		<div class="row justify-content-center">
+			<img src="<%= treasure.image %>" id="normalimg">
+		</div>
+		<h5 class="card-header"><%= treasure.name %></h5>
+		<div class="card-body">
+			<p class="card-text"><span class="alert alert-primary">描述</span> <%= treasure.description %></p>
+			<p class="card-text"><span class="alert alert-primary">價格</span> <%= treasure.price %></p>
+			<p class="card-text"><span class="alert alert-primary">庫存</span> <%= treasure.stocks %></p>
+			<p class="card-text"><span class="alert alert-primary">上架日期</span> <UTC><%= UTC(treasure.releasedate) %></UTC></p>
+			<p class="card-text"><span class="alert alert-primary">販賣中</span> <%= treasure.issold %></p>
+			<p class="card-text"><span class="alert alert-primary">是否推薦</span> <%= treasure.isrecommend %></p>
+			<p class="card-text"><span class="alert alert-primary">是否熱銷</span> <%= treasure.ishotsold %></p>
+			<% if(currentUser){ %>
+				<form action="/shoppinglist/<%= treasure._id %>?_method=PUT" method="POST">
+					<div class="form-group">
+						<input type="number" name="shoppinglist[qty]" value="0">
+						<button type="submit" class="btn btn-success">放到購物車內</button>
+					</div>
+				</form>
+			<% } %>
+			<button class="btn btn-info" onclick="location.href='/treasures/'">回到寶物清單</button>
+			
+
+		</div>
+		<!-- comments -->	
+	</div>
+
+
+	    
+
+	
+</list>
+</div>
+
+
+
+<%- include("../partials/footer") %>
+
+
+
+
+
+
+
+
+
+
+    
