@@ -1,16 +1,49 @@
+var reset_rebot = {};
+var config = require("./config");
+
 var mongoose = require("mongoose");
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect("mongodb://localhost/cloud_demo", {useNewUrlParser: true});
 
 
-var User = require("./models/user");
-var Article = require("./models/article");
-var Treasure = require("./models/treasure");
-var Event = require("./models/event");
-var Dealterm = require("./models/deallog/dealrecipe");
-var Dealrecipe = require("./models/deallog/dealterm");
+var User = require("./user");
+var Article = require("./article");
+var Treasure = require("./treasure");
+var Event = require("./event");
+var Dealterm = require("./deallog/dealrecipe");
+var Dealrecipe = require("./deallog/dealterm");
 
 
+
+
+
+
+function seedData(el){
+    return new Promise(function(resolve, reject){
+		el.save(function (err, ele){
+            if(err){
+                reject(err);
+            }
+			console.log(ele + "...added...");
+            resolve(el);
+        });
+	});
+};
+
+
+
+
+//yes, this is stupid...would rebase it and init.js
+function reset(){
+    return new Promise((resetResolve, resetReject)=>{
+
+
+promiseOrder = Promise.resolve(); //used to all
+sequence = Promise.resolve(); //used to add
+
+
+//IT would be assigned in this function every time,
+//or mongoose would see these are the SAMES to save error
 var treasuresAry = [
 	new Treasure({
 	    id: 1,
@@ -150,26 +183,6 @@ var eventsAry = [
 	
 ];
 
-
-
-function seedData(el){
-    return new Promise(function(resolve, reject){
-		el.save(function (err, ele){
-            if(err){
-                reject(err);
-            }
-			console.log(ele + "...added...");
-            resolve(el);
-        });
-	});
-};
-
-
-
-var promiseOrder = Promise.resolve(); //used to all
-var sequence = Promise.resolve(); //used to add
-
-
 //START TO RUN
 //
 //
@@ -305,9 +318,33 @@ promiseOrder = promiseOrder.then(()=>{
 
 
 promiseOrder.then(()=>{
-	console.log("initialize complete...")
+    console.log("initialize complete...")
+    resetResolve();
 }).catch((e)=>{
 	console.log("something wrong:")
-	console.log(e);
+    console.log(e);
+    resetReject();
 });
 
+
+
+})
+}
+
+
+var counts = 0;
+reset_rebot.tmr = function(){
+    counts++;
+    reset().then(()=>{
+        console.log(counts + "]reset")
+        setTimeout(reset_rebot.tmr, config.autoResetSecs*1000);
+    }).catch((e)=>{
+        console.log(counts + "]reset...but fail...")
+        setTimeout(reset_rebot.tmr, config.autoResetSecs*1000);
+    });
+    
+}
+
+
+
+module.exports = reset_rebot;
