@@ -332,19 +332,46 @@ promiseOrder.then(()=>{
 }
 
 
+
+
 var counts = 0;
+reset_rebot.go = function(){
+	var nowTime = new Date();
+	var latermilliSecs = getNextmilliSecs(nowTime);
+	
+	console.log(nowTime + ": reset>>>")
+	counts++;
+	reset().then(()=>{
+		console.log(counts+"] reset done")
+		console.log("next reset would run after " + latermilliSecs/1000 + "secs")
+        setTimeout(reset_rebot.tmr, latermilliSecs);
+    }).catch((e)=>{
+        console.log(counts+"] reset fail")
+        setTimeout(reset_rebot.tmr, latermilliSecs);
+    });
+	
+}
+
+
 reset_rebot.tmr = function(){
-    counts++;
+	console.log(new Date() + ": reset>>>")
+	counts++;
     reset().then(()=>{
-        console.log(counts + "]reset")
+        console.log(counts+"] reset done")
         setTimeout(reset_rebot.tmr, config.autoResetSecs*1000);
     }).catch((e)=>{
-        console.log(counts + "]reset...but fail...")
+        console.log(counts+"] reset fail")
         setTimeout(reset_rebot.tmr, config.autoResetSecs*1000);
     });
     
 }
 
+
+function getNextmilliSecs(nowTime){
+	//this cals from 2020/1/1(1577808000000)
+	var ans = 3600000-(nowTime-1577808000000)%3600000; //ms
+	return ans;
+}
 
 
 module.exports = reset_rebot;

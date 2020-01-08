@@ -63,7 +63,7 @@ var reset_rebot = require("./models/reset_rebot");
 var config = require("./models/config");
 
 if(config.isAutoReset){
-	reset_rebot.tmr();
+	reset_rebot.go();
 }
 
 
