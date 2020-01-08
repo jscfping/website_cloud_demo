@@ -63,7 +63,7 @@ var reset_rebot = require("./models/reset_rebot");
 var config = require("./models/config");
 
 if(config.isAutoReset){
-	reset_rebot.go();
+	reset_rebot.tmr();
 }
 
 
@@ -86,7 +86,7 @@ app.get("/",function(req, res){
 			res.send("events found error!");
 		}
 		else{
-			res.render("index", {events: founds});
+			res.render("index", {events: founds, nextTime: reset_rebot.nextTime});
 		}
 	    
 	})

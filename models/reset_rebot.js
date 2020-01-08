@@ -23,8 +23,10 @@ function seedData(el){
 		el.save(function (err, ele){
             if(err){
                 reject(err);
-            }
-			console.log(ele + "...added...");
+			}
+			if(config.autoResetIsShown){
+				console.log(ele + "...added...");
+			}
             resolve(el);
         });
 	});
@@ -335,41 +337,28 @@ promiseOrder.then(()=>{
 
 
 var counts = 0;
-reset_rebot.go = function(){
-	var nowTime = new Date();
-	var latermilliSecs = getNextmilliSecs(nowTime);
-	
-	console.log(nowTime + ": reset>>>")
-	counts++;
-	reset().then(()=>{
-		console.log(counts+"] reset done")
-		console.log("next reset would run after " + latermilliSecs/1000 + "secs")
-        setTimeout(reset_rebot.tmr, latermilliSecs);
-    }).catch((e)=>{
-        console.log(counts+"] reset fail")
-        setTimeout(reset_rebot.tmr, latermilliSecs);
-    });
-	
-}
-
 
 reset_rebot.tmr = function(){
-	console.log(new Date() + ": reset>>>")
+	var nowTime = new Date();
+	var latermilliSecs = getNextmilliSecs(nowTime, config.autoResetSecs);
+	reset_rebot.nextTime = new Date(nowTime.getTime()+latermilliSecs);
+	console.log(nowTime + ": reset>>>")
 	counts++;
     reset().then(()=>{
         console.log(counts+"] reset done")
-        setTimeout(reset_rebot.tmr, config.autoResetSecs*1000);
+        setTimeout(reset_rebot.tmr, latermilliSecs);
     }).catch((e)=>{
         console.log(counts+"] reset fail")
-        setTimeout(reset_rebot.tmr, config.autoResetSecs*1000);
+        setTimeout(reset_rebot.tmr, latermilliSecs);
     });
     
 }
 
 
-function getNextmilliSecs(nowTime){
-	//this cals from 2020/1/1(1577808000000)
-	var ans = 3600000-(nowTime-1577808000000)%3600000; //ms
+function getNextmilliSecs(nowTime, intervalSec){
+	//this cals from 2020.1.1.00.00.00.000(1577808000000)
+	var interval = intervalSec * 1000 //ms
+	var ans = interval-(nowTime-1577808000000)%interval; //ms
 	return ans;
 }
 
