@@ -61,13 +61,14 @@ var dbfunc = require("./models/dbfunc");
 var keyy = require("./keyy");
 var reset_rebot = require("./models/reset_rebot");
 var config = require("./models/config");
+var rollCall = require("./models/api/rollcall");
 
 if(config.isAutoReset){
 	reset_rebot.tmr();
 }
 
 
-
+rollCall.init();
 
 
 
