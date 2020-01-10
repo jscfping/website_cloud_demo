@@ -1,0 +1,56 @@
+<% function UTC(x){ %>
+<%     if(x){ %>
+<%         return x.getTime() %>
+<%     } %>
+<% } %>
+
+
+<% var uid = null %>
+<% var isUidFinished = -2 %>
+<% if(currentUser){ %>
+	<% uid = currentUser._id %>
+    <% isUidFinished = event.finish_uid.indexOf(uid) %>
+<% } %>
+
+
+
+
+
+
+
+<%- include("../partials/header") %>
+
+<div class="container">
+    
+	    <h6>活動名稱: <%= event.name %></h6>
+	    <h6>活動描述: <%= event.description %></h6>
+	    <h6>獎勵金額: <%= event.reward_cash %></h6>
+        <h6>趕快來完成活動吧~~~~~</h6>
+
+	    <% if(isUidFinished >= 0){ %>
+	    <h6><strong>恭喜~~~您已完成了此活動~~~~</strong></h6>
+	    <% }else if(isUidFinished === (-1)){ %>
+			<form action="/events/<%= event._id %>" method="POST">
+				<button class="btn btn-primary" type="submit">吾已完成活動!</button>
+	        </form>
+		<% } %>
+		<hr>
+		<button class="btn btn-info" onclick="location.href='/events/'">回活動頁</button>
+	
+	
+</div>
+
+
+
+<%- include("../partials/footer") %>
+
+
+
+
+
+
+
+
+
+
+    
