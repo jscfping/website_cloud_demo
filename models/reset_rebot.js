@@ -161,7 +161,7 @@ var eventsAry = [
 		name: "雲氣象",
 	    description: "告訴本雲此預報API最低溫為多少，本雲會送一些些$$以答謝",
 	    isrunning: true,
-		reward_cash: 1000,
+		reward_cash: 1000
     }),
 	// new Event({
 	// 	eid: "0102",
@@ -179,8 +179,15 @@ var eventsAry = [
 			{
 			    id: "11",
 			    qty: 1
-			},
+			}
 		]
+	}),
+	new Event({
+		eid: "1002",
+	    name: "每分點名",
+	    description: "每分鐘點名一次拿$$",
+		isrunning: true,
+		reward_cash: 300
     })
 	
 ];
@@ -338,19 +345,26 @@ promiseOrder.then(()=>{
 
 var counts = 0;
 
+
+
 reset_rebot.tmr = function(){
-	var nowTime = new Date();
-	var latermilliSecs = getNextmilliSecs(nowTime, config.autoResetSecs);
-	reset_rebot.nextTime = new Date(nowTime.getTime()+latermilliSecs);
-	console.log(nowTime + ": reset>>>")
-	counts++;
-    reset().then(()=>{
-        console.log(counts+"] reset done")
-        setTimeout(reset_rebot.tmr, latermilliSecs);
-    }).catch((e)=>{
-        console.log(counts+"] reset fail")
-        setTimeout(reset_rebot.tmr, latermilliSecs);
-    });
+	return new Promise((tmrResolve, tmrReject)=>{
+		var nowTime = new Date();
+		var latermilliSecs = getNextmilliSecs(nowTime, config.autoResetSecs);
+		reset_rebot.nextTime = new Date(nowTime.getTime()+latermilliSecs);
+		console.log(nowTime + ": reset>>>")
+		counts++;
+		reset().then(()=>{
+			console.log(counts+"] reset done")
+			setTimeout(reset_rebot.tmr, latermilliSecs);
+			tmrResolve();
+		}).catch((e)=>{
+			console.log(counts+"] reset fail")
+			setTimeout(reset_rebot.tmr, latermilliSecs);
+			tmrReject(e);
+		});
+	});
+	
     
 }
 

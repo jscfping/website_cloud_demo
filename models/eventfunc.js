@@ -1,6 +1,8 @@
 
 var dbfunc = require("./dbfunc");
 var apiCWB = require("./api/apicwb");
+var rollCall = require("./api/rollcall");
+
 
 var Event = require("./event");
 var User = require("./user");
@@ -8,13 +10,13 @@ var Treasure = require("./treasure");
 
 var eventfunc = {};
 
-
 // initialize
 apiCWB.init();
 apiCWB.getCWBData().catch((e)=>{
 	apiCWB.failCounts = 999; //if not setted, apiCWB.data would be null to render
 	console.log("[api_CWB]init CWB api fail, set failCounts:999...");
 });
+rollCall.init();   //collision with robot!!!!!!
 
 
 
@@ -52,6 +54,11 @@ eventfunc.eventPrepare = function(req, res, next){
 				res.locals.running_event.result = e;
 				next();
 			});
+			break;
+		case "e1002":
+			res.locals.rollCallNextTime = rollCall.nextTime;
+			res.locals.running_event.isSuc = true;	
+			next();
 			break;
 		default:
 			res.locals.running_event.isSuc = true;	
@@ -111,6 +118,9 @@ eventfunc.logic = function(req, res, next){
 			break;
 		case "e1001":
 			p = eventfunc.logic["e1001"](req, res).then((val)=>{tmp_event = val});
+			break;
+		case "e1002":
+			p = eventfunc.logic["e1002"](req, res).then((val)=>{tmp_event = val});
             break;
         default:
             p = Promise.resolve().then(()=>{logicFunFound = false});
@@ -338,12 +348,30 @@ eventfunc.logic.e1001 = function(req, res){
 		}
 		else{
 			res.locals.running_event.isSuc = false;
-			res.locals.running_event.result = "fail reason"
+			res.locals.running_event.result = "user is not valid";
 		}
 		resolve(res.locals.running_event);
 	});
 }
 
+//sample event
+eventfunc.logic.e1002 = function(req, res){
+	return new Promise((resolve, reject)=>{
+		var keyobj = ""; //alway check the valve exist first!
+		if(req.user._id){
+			keyobj = req.user._id.toString();
+		} 
+
+		if(keyobj.length > 0){
+			res.locals.running_event.isSuc = true;
+		}
+		else{
+			res.locals.running_event.isSuc = false;
+			res.locals.running_event.result = "user is not valid";
+		}
+		resolve(res.locals.running_event);
+	});
+}
 
 
 //sample event
@@ -366,9 +394,6 @@ eventfunc.logic.e0000 = function(req, res){
 		resolve(res.locals.running_event);
 	});
 }
-
-
-
 
 
 

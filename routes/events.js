@@ -46,7 +46,7 @@ router.get("/:id",
 			}); 
 		}
 		else{
-            res.send(res.locals.running_event.result, {foundAllTreasures: res.locals.foundAllTreasures});
+            res.send(res.locals.running_event.result);
 		}
 });
 

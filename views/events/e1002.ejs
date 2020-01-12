@@ -25,13 +25,15 @@
 	    <h6>活動名稱: <%= event.name %></h6>
 	    <h6>活動描述: <%= event.description %></h6>
 	    <h6>獎勵金額: <%= event.reward_cash %></h6>
-        <h6>趕快來完成活動吧~~~~~</h6>
+        <h6>趕快來點名吧~~~~~</h6>
 
 	    <% if(isUidFinished >= 0){ %>
-	    <h6><strong>恭喜~~~您已完成了此活動~~~~</strong></h6>
+		    <h6><strong>恭喜~~~您已完成了此點名~~~~</strong></h6>
+			下次點名時間為:
+			<div class="alert alert-success"><UTC><%= UTC(rollCallNextTime) %></UTC></div>
 	    <% }else if(isUidFinished === (-1)){ %>
 			<form action="/events/<%= event._id %>" method="POST">
-				<button class="btn btn-primary" type="submit">吾已完成活動!</button>
+				<button class="btn btn-primary" type="submit">點名!</button>
 	        </form>
 		<% } %>
 		<hr>
