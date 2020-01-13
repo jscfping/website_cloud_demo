@@ -1,0 +1,70 @@
+<%- include("./partials/header") %>
+
+<% //foundAllUsers, foundAllTreasures, foundAllArticles %>
+
+<div class="container">
+
+	<h1>Here are all users:</h1>
+	<% foundAllUsers.forEach(function(user){ %>
+	    
+	    <h3>id: <%= user._id %></h3>
+	    <h3>username: <%= user.username %></h3>
+	    <h3>password: <%= user.password %>(this would be salt and hash)</h3>
+	    <h3>nicename: <%= user.nickname %></h3>
+	    <h3>age: <%= user.age %></h3>
+	    <h3>money: <%= user.cash %></h3>
+	    <h3>location: <%= user.location %></h3>
+	    
+	    <h3>shoppinglist:</h3>
+	    <% user.shoppinglist.forEach(function(el){ %>
+	        <h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
+		<% });%>
+	
+	    <h3>deallog:</h3>
+	    <% user.deallog.forEach(function(el){ %>
+	        <h6>id:<%= el._id %></h6>
+		<% });%>
+	
+	    <h3>treasures:</h3>
+	    <% user.treasures.forEach(function(el){ %>
+	        <h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
+		<% });%>
+		<hr>
+	<% }); %>
+	<hr>
+	<hr>
+	<hr>
+	<% foundAllTreasures.forEach(function(treasure){ %>
+		<h3>_id: <%= treasure._id %></h3>
+		<h3>id: <%= treasure.id %></h3>
+		<h3>name: <%= treasure.name %></h3>
+		<img src="<%= treasure.image %>">
+		<h3>desc: <%= treasure.description %></h3>
+		<h3>price: <%= treasure.price %></h3>
+		<h3>stocks: <%= treasure.stocks %></h3>
+		
+	    <hr>
+	<% }); %>
+	<hr>
+	<hr>
+	<hr>
+	<% foundAllArticles.forEach(function(article){ %>
+		<h3>_id: <%= article._id %></h3>
+		<h3>title: <%= article.title %></h3>
+		<h3>description: <%= article.description %></h3>
+		<h3>authorid: <%= article.authorid %></h3>
+		<h3>created: <%= article.created %></h3>
+		<h3>isedited: <%= article.isedited %></h3>
+		<h3>edited: <%= article.edited %></h3>
+		
+	    <hr>
+	<% }); %>
+	<hr>
+	<hr>
+	<hr>
+
+	
+	
+</div>
+
+<%- include("./partials/footer") %>

@@ -166,16 +166,12 @@ app.get("/logout", function(req, res){
 
 
 
-app.get("/u", function(req, res){
-	User.find({}, function(err, allusers){
-	    if (err) {
-	    	console.log(err);
-			res.send("error! users not found...");
-	    }
-	    else {
-	        res.render("users/dev", {allusers: allusers});
-	    }
-	});
+app.get("/backstage",
+    middleware.findAllUsers,
+	middleware.findAllTreasures,
+	middleware.findAllArticles,
+	function(req, res){
+		res.render("backstage");
 });
 
 

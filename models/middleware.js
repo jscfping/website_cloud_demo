@@ -634,10 +634,10 @@ middleware.findUser = function(req, res, next){
 }
 
 
-middleware.findUser = function(req, res, next){
-	var stu = "......@findUser";
-	dbfunc.findById(User, req.user._id).then((resolve)=>{
-		res.locals.foundUser = resolve;
+middleware.findAllUsers = function(req, res, next){
+	var stu = "......@findAllUser";
+	dbfunc.findsByProp(User, {}).then((resolve)=>{
+		res.locals.foundAllUsers = resolve;
 		next();
 	}).catch((e)=>{
         res.send(e + stu);
@@ -648,6 +648,16 @@ middleware.findAllTreasures = function(req, res, next){
 	var stu = "......@findAllTreasures";
 	dbfunc.findsByProp(Treasure, {}).then((resolve)=>{
 		res.locals.foundAllTreasures = resolve;
+		next();
+	}).catch((e)=>{
+        res.send(e + stu);
+	});
+}
+
+middleware.findAllArticles = function(req, res, next){
+	var stu = "......@findAllArticles";
+	dbfunc.findsByProp(Article, {}).then((resolve)=>{
+		res.locals.foundAllArticles = resolve;
 		next();
 	}).catch((e)=>{
         res.send(e + stu);
