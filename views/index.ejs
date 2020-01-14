@@ -10,6 +10,9 @@
 <%     if(events[i].eid === "0002"){ %>
 <%         eventid[2] = events[i]._id; %>
 <%     } %>
+<%     if(events[i].eid === "1002"){ %>
+<%         eventid[3] = events[i]._id; %>
+<%     } %>
 <% } %>
 
 <% function UTC(x){ %>
@@ -29,6 +32,7 @@
 		  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
 		  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
 		  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+		  <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
 		</ol>
 		<div class="carousel-inner">
 		  <div class="carousel-item active">
@@ -36,10 +40,13 @@
 			<a href="events/<%= eventid[0] %>"><img src="/images/banners/banner01.png" class="d-block w-100" alt="..."></a>
 		  </div>
 		  <div class="carousel-item">
-			<a href="events/<%= eventid[1] %>"><img src="/images/banners/banner02.png" class="d-block w-100" alt="..."></a href="events/<%= eventid[0] %>">
+			<a href="events/<%= eventid[1] %>"><img src="/images/banners/banner02.png" class="d-block w-100" alt="..."></a>
 		  </div>
 		  <div class="carousel-item">
-			<a href="events/<%= eventid[2] %>"><img src="/images/banners/banner03.png" class="d-block w-100" alt="..."></a href="events/<%= eventid[0] %>">
+			<a href="events/<%= eventid[2] %>"><img src="/images/banners/banner03.png" class="d-block w-100" alt="..."></a>
+		  </div>
+		  <div class="carousel-item">
+			<a href="events/<%= eventid[3] %>"><img src="/images/banners/banner04.png" class="d-block w-100" alt="..."></a>
 		  </div>
 		</div>
 		<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
