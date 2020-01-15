@@ -6,29 +6,31 @@
 
 	<h1>Here are all users:</h1>
 	<% foundAllUsers.forEach(function(user){ %>
-	    
-	    <h3>id: <%= user._id %></h3>
-	    <h3>username: <%= user.username %></h3>
-	    <h3>password: <%= user.password %>(this would be salt and hash)</h3>
-	    <h3>nicename: <%= user.nickname %></h3>
-	    <h3>age: <%= user.age %></h3>
-	    <h3>money: <%= user.cash %></h3>
-	    <h3>location: <%= user.location %></h3>
-	    
-	    <h3>shoppinglist:</h3>
-	    <% user.shoppinglist.forEach(function(el){ %>
-	        <h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
-		<% });%>
-	
-	    <h3>deallog:</h3>
-	    <% user.deallog.forEach(function(el){ %>
-	        <h6>id:<%= el._id %></h6>
-		<% });%>
-	
-	    <h3>treasures:</h3>
-	    <% user.treasures.forEach(function(el){ %>
-	        <h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
-		<% });%>
+	    <form action="/backstage/user/<%= user._id %>" method="post">
+	        <h3>id: <%= user._id %></h3>
+	        <h3>username: <%= user.username %></h3>
+	        <h3>password: <%= user.password %>(this would be salt and hash)</h3>
+			<h3>nicename: <%= user.nickname %></h3><input type="text" name="user[nickname]">
+			<h3>age: <%= user.age %></h3><input type="text" name="user[age]">
+			<h3>money: <%= user.cash %></h3><input type="text" name="user[cash]">
+			<h3>location: <%= user.location %></h3><input type="text" name="user[location]">
+			
+			<h3>shoppinglist:</h3>
+			<% user.shoppinglist.forEach(function(el){ %>
+				<h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
+			<% });%>
+		
+			<h3>deallog:</h3>
+			<% user.deallog.forEach(function(el){ %>
+				<h6>id:<%= el._id %></h6>
+			<% });%>
+		
+			<h3>treasures:</h3>
+			<% user.treasures.forEach(function(el){ %>
+				<h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
+			<% });%>
+			<input type="submit" value="UPDATE!">
+	    </form>
 		<hr>
 	<% }); %>
 	<hr>
