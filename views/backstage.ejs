@@ -37,13 +37,16 @@
 	<hr>
 	<hr>
 	<% foundAllTreasures.forEach(function(treasure){ %>
-		<h3>_id: <%= treasure._id %></h3>
-		<h3>id: <%= treasure.id %></h3>
-		<h3>name: <%= treasure.name %></h3>
-		<img src="<%= treasure.image %>">
-		<h3>desc: <%= treasure.description %></h3>
-		<h3>price: <%= treasure.price %></h3>
-		<h3>stocks: <%= treasure.stocks %></h3>
+		<form action="/backstage/treasure/<%= treasure._id %>" method="post">
+			<h3>_id: <%= treasure._id %></h3>
+			<h3>id: <%= treasure.id %></h3><input type="number" name="treasure[id]">
+			<h3>name: <%= treasure.name %></h3><input type="text" name="treasure[name]">
+			<h3><img src="<%= treasure.image %>"></h3><input type="text" name="treasure[image]">
+			<h3>desc: <%= treasure.description %></h3><input type="text" name="treasure[description]">
+			<h3>price: <%= treasure.price %></h3><input type="number" name="treasure[price]">
+			<h3>stocks: <%= treasure.stocks %></h3><input type="number" name="treasure[stocks]">
+			<input type="submit" value="UPDATE!">
+		</form>
 		
 	    <hr>
 	<% }); %>
@@ -51,13 +54,16 @@
 	<hr>
 	<hr>
 	<% foundAllArticles.forEach(function(article){ %>
-		<h3>_id: <%= article._id %></h3>
-		<h3>title: <%= article.title %></h3>
-		<h3>description: <%= article.description %></h3>
-		<h3>authorid: <%= article.authorid %></h3>
-		<h3>created: <%= article.created %></h3>
-		<h3>isedited: <%= article.isedited %></h3>
-		<h3>edited: <%= article.edited %></h3>
+		<form action="/backstage/article/<%= article._id %>" method="post">
+			<h3>_id: <%= article._id %></h3>
+			<h3>title: <%= article.title %></h3><input type="text" name="article[title]">
+			<h3>description: <%= article.description %></h3><input type="text" name="article[description]">
+			<h3>authorid: <%= article.authorid %></h3><input type="text" name="article[authorid]">
+			<h3>created: <%= article.created %></h3><input type="text" name="article[created]" placeholder="use UTC number">
+			<h3>isedited: <%= article.isedited %></h3><input type="checkbox" name="article[isedited]">
+			<h3>edited: <%= article.edited %></h3><input type="text" name="article[edited]" placeholder="use UTC number">
+			<input type="submit" value="UPDATE!">
+		</form>
 		
 	    <hr>
 	<% }); %>
