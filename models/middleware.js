@@ -626,7 +626,7 @@ middleware.replenishment = function(req, res, next){
 middleware.findUser = function(req, res, next){
 	var stu = "......@findUser";
 	dbfunc.findById(User, req.user._id).then((resolve)=>{
-		res.locals.userdata = resolve;
+		res.locals.foundUser = resolve;
 		next();
 	}).catch((e)=>{
         res.send(e + stu);
