@@ -223,16 +223,23 @@ app.get("/user/:id",
 				res.send("error! user not found...");
 			}
 			else {
-				Article.find({authorid: found._id}, function(err, foundUserArticles){
-					if (err) {
-						console.log(err);
-						res.send("error! article not found...");
-					}
-					else {
-						res.locals.foundUserArticles = foundUserArticles;
-						res.render("users/userpage", {user: found});
-					}
-				});
+
+				if(found){
+					Article.find({authorid: found._id}, function(err, foundUserArticles){
+						if (err) {
+							console.log(err);
+							res.send("error! article not found...");
+						}
+						else {
+							res.locals.foundUserArticles = foundUserArticles;
+							res.render("users/userpage", {user: found});
+						}
+					});
+				}
+				else{
+					res.send("error! user not found...");
+				}
+				
 			}
 		});
 });
