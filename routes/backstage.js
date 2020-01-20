@@ -10,15 +10,26 @@ var Event = require("../models/event");
 var Treasure = require("../models/treasure");
 
 
-router.post("/user/", function(req, res){
+router.get("/",
+    middleware.findAllUsers,
+	middleware.findAllTreasures,
+	middleware.findAllArticles,
+	function(req, res){
+		res.render("backstage");  //it would add placeholder
+});
+
+router.post("/user/:id",
+    middleware.findUser,
+    middleware.updateUser,  //fix me for only edit nickname, desc
+    function(req, res){
+	    res.redirect("/backstage/");
+});
+
+router.post("/treasure/:id", function(req, res){
 	
 });
 
-router.post("/treasure/", function(req, res){
-	
-});
-
-router.post("/article/", function(req, res){
+router.post("/article/:id", function(req, res){
 	
 });
 

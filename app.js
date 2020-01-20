@@ -165,17 +165,6 @@ app.get("/logout", function(req, res){
 
 
 
-
-app.get("/backstage",
-    middleware.findAllUsers,
-	middleware.findAllTreasures,
-	middleware.findAllArticles,
-	function(req, res){
-		res.render("backstage");
-});
-
-
-
 app.get("/user",
 	middleware.isLogIned,
 	middleware.findUser, //it can be rebased with closure
@@ -650,7 +639,8 @@ var eventRoutes    = require("./routes/events");
 app.use("/events", eventRoutes);
 
 
-
+var backstageRoutes    = require("./routes/backstage");
+app.use("/backstage", backstageRoutes);
 
 
 
