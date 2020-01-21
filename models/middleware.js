@@ -622,7 +622,7 @@ middleware.replenishment = function(req, res, next){
 
 
 
-
+//it would be rebase
 middleware.findUser = function(req, res, next){
 	var stu = "......@findUser";
 	dbfunc.findById(User, req.user._id).then((resolve)=>{
@@ -632,6 +632,42 @@ middleware.findUser = function(req, res, next){
         res.send(e + stu);
 	});
 }
+
+//it would be rebase
+middleware.findUserUrlById = ()=>{
+	return function(req, res, next){
+		var stu = "......@findUser";
+		dbfunc.findById(User, req.params.id).then((resolve)=>{
+			res.locals.user = resolve;
+			next();
+		}).catch((e)=>{
+			res.send(e + stu);
+		});
+	}
+}
+
+//{authorid: res.locals.user._id}
+//parameterized to base
+middleware.findArticle = (packString, reqArray, resArray)=>{
+	return function(req, res, next){
+		var stu = "......@findArticle";
+		var obj = {};
+        var i = 0; //it would be fix
+		obj[resArray[i][0]] = res[resArray[i][1]][resArray[i][2]][resArray[i][3]]
+
+        dbfunc.findsByProp(Article, obj).then((resolve)=>{
+			res.locals[packString] = resolve;
+			next();
+		}).catch((e)=>{
+			res.send(e + stu);
+		});
+	}
+}
+
+
+
+
+
 
 
 middleware.findAllUsers = function(req, res, next){
@@ -689,7 +725,24 @@ middleware.findUserDeallogs = function(req, res, next){
 }
 
 
+middleware.register = ()=>{
+	return function(req, res, next){
+		var stu = "......@handle register";
+		var newUser = new User({username: req.body.username});
+	    userInfoInit(newUser); //here would add a lowcase check!!!
+		
+		User.register(newUser, req.body.password, function(err, user){  //from passport-local-mongoose
+			if(err){
+				console.log(err);
+				return res.send("register error----->" + err);
+			}
+			else{
+				next();
+			}
 
+		});
+	}
+}
 
 
 
@@ -726,6 +779,11 @@ function seedData(el){
 
 
 
+//function
+function userInfoInit(obj){
+    obj.nickname= obj.username;
+	obj.cash= 0;
+};
 
 
 

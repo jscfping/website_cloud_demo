@@ -29,7 +29,7 @@ var Event = require("./models/event");
 // set up express
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-app.use(express.static(__dirname + "/public")); // __dirname means current folder???
+app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 
 
@@ -70,19 +70,17 @@ if(config.isAutoReset){
 
 
 
-
+//
+//
 //routes
 app.get("/",function(req, res){
-	Event.find({}, function(err, founds){
-	    if (err) {
-	    	console.log(err);
-			res.send("events found error!");
-		}
-		else{
-			res.render("index", {events: founds, nextTime: reset_rebot.nextTime});
-		}
-	    
-	})
+	dbfunc.findsByProp(Event, {}).then((founds)=>{
+		res.render("index", {events: founds, nextTime: reset_rebot.nextTime});
+	}
+	).catch((e)=>{
+		console.log(err);
+		res.send(e);
+	});
 });
 
 
@@ -96,19 +94,9 @@ app.get("/register", function(req, res){
 });
 
 // handle sign up logic
-app.post("/register", function(req, res){
-
-	var newUser = new User({username: req.body.username});
-	userInfoInit(newUser); //better method???
-	
-	//here would add a lowcase check!!!
-    
-	User.register(newUser, req.body.password, function(err, user){  //from passport-local-mongoose
-        if(err){
-            console.log(err);
-            return res.render("users/register");
-        }
-		
+app.post("/register",
+	middleware.register(),
+	function(req, res){
 		//http://www.passportjs.org/docs/authenticate/
 		//JS' closure
 		passport.authenticate("local")(req, res, function(){
@@ -122,20 +110,18 @@ app.post("/register", function(req, res){
 			})
 			
 		});
-    });
-});
+	}
+);
 
 
 
 // show login form
 app.get("/login", function(req, res){
-	//can be better
     if(req.user){
         res.redirect("/"); 
 	}else{
 		res.render("users/login"); 
 	}
-	
 });
 
 // handling login logic
@@ -157,7 +143,6 @@ app.get("/logout", function(req, res){
 	}else{
 		res.redirect("/login"); 
 	}
-	
 });
 
 
@@ -204,36 +189,13 @@ app.put("/user/",
 
 
 app.get("/user/:id",
-    middleware.findAllTreasures,
+	middleware.findAllTreasures,
+	middleware.findUserUrlById(),
+	//{authorid: res.locals.user._id}
+	middleware.findArticle("foundUserArticles", [], [["authorid", "locals", "user", "_id"]]),
 	function(req, res){
-		User.findOne({_id: req.params.id}, function(err, found){
-			if (err) {
-				console.log(err);
-				res.send("error! user not found...");
-			}
-			else {
-
-				if(found){
-					Article.find({authorid: found._id}, function(err, foundUserArticles){
-						if (err) {
-							console.log(err);
-							res.send("error! article not found...");
-						}
-						else {
-							res.locals.foundUserArticles = foundUserArticles;
-							res.render("users/userpage", {user: found});
-						}
-					});
-				}
-				else{
-					res.send("error! user not found...");
-				}
-				
-			}
-		});
+		res.render("users/userpage");
 });
-
-
 
 
 
@@ -717,11 +679,6 @@ app.listen(3000, function(){
 
 
 
-//function
-function userInfoInit(obj){
-    obj.nickname= obj.username;
-	obj.cash= 0;
-};
 
 
 
