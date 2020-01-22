@@ -17,6 +17,8 @@
 		<div class="card-body">
 			<p class="card-text">id: <%= user._id %> <a href="/user/edit" class="btn btn-info">編輯個人資料</a></p>
 			<p class="card-text">持有$$: <%= user.cash %></p>
+			<p class="card-text">年齡: <%= user.age %></p>
+			<p class="card-text">來自: <%= user.location %></p>
             <p class="card-text">自我介紹:
 				<textarea name="article[description]" class="form-control" rows="3" readonly="readonly"><%= user.desc %></textarea>
 			</p>

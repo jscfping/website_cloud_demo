@@ -46,6 +46,7 @@
 
 		<ul class="navbar-nav">
 			<% if(currentUser){ %>
+				    <button class="btn btn-danger" onclick="location.href='/backstage'" title="改資料的後台，權限功能準備">後台</button>
 				    <button class="btn btn-outline-info" onclick="location.href='/replenishment'" title="告訴小精靈要補貨了，只有任一寶物數量3以下，小精靈才會願意補貨">補貨通知</button>
 				<li class="nav-item">
 					<a href="/shoppinglist" class="nav-link" title="現在購物車的商品"><img src="/images/icos/shopping_cart-24px.svg" ></a>

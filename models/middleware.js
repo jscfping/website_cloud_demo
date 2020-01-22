@@ -6,6 +6,14 @@ var Dealrecipe = require("./deallog/dealrecipe");
 var dbfunc = require("./dbfunc");
 var middleware = {};
 
+var mongooseSchema = {
+	User: User,
+	Article: Article,
+	Treasure: Treasure,
+	Dealterm: Dealterm,
+	Dealrecipe: Dealrecipe
+}
+
 
 middleware.isLogIned = function(req, res, next){
 	if(req.isAuthenticated()){
@@ -647,13 +655,31 @@ middleware.findUserUrlById = ()=>{
 }
 
 //{authorid: res.locals.user._id}
-//parameterized to base
-middleware.findArticle = (packString, reqArray, resArray)=>{
+middleware.findArticle = (packString, rqA, rsA)=>{
 	return function(req, res, next){
 		var stu = "......@findArticle";
 		var obj = {};
-        var i = 0; //it would be fix
-		obj[resArray[i][0]] = res[resArray[i][1]][resArray[i][2]][resArray[i][3]]
+		var reqArray = JSON.parse(JSON.stringify(rqA));
+		var resArray = JSON.parse(JSON.stringify(rsA));
+
+        //make renew to search by req
+        for(var i=0; i<reqArray.length; i++){
+			var prop = reqArray[i].shift();
+			var tmp = req;
+			while(reqArray[i].length>0){
+				tmp = tmp[reqArray[i].shift()];
+			}
+			obj[prop] = tmp;
+		}
+        //make renew to search by res
+		for(var i=0; i<resArray.length; i++){
+			var prop = resArray[i].shift();
+			var tmp = res;
+			while(resArray[i].length>0){
+				tmp = tmp[resArray[i].shift()];
+			}
+			obj[prop] = tmp;
+		}
 
         dbfunc.findsByProp(Article, obj).then((resolve)=>{
 			res.locals[packString] = resolve;
@@ -666,7 +692,43 @@ middleware.findArticle = (packString, reqArray, resArray)=>{
 
 
 
+middleware.update = (schema, packString, rqA, rsA)=>{
+	return function(req, res, next){
+		var stu = "......@update with" + schema;
+		var renew = {};
+		var reqArray = JSON.parse(JSON.stringify(rqA)); //deep clone!!!
+		var resArray = JSON.parse(JSON.stringify(rsA));
 
+		//make renew to search by req
+		for(var i=0; i<reqArray.length; i++){
+			var prop = reqArray[i].shift();
+			var tmp = req;
+			while(reqArray[i].length>0){
+				tmp = tmp[reqArray[i].shift()];
+			}
+			renew[prop] = tmp;
+		}
+
+		//make renew to search by res
+        for(var i=0; i<resArray.length; i++){
+			var prop = resArray[i].shift();
+			var tmp = res;
+			while(resArray[i].length>0){
+				tmp = tmp[resArray[i].shift()];
+			}
+			renew[prop] = tmp;
+		}
+		
+		dbfunc.updateById(mongooseSchema[schema], req.params.id, renew).then(()=>{
+			res.locals[packString] = renew;
+			next();
+		}).catch((e)=>{
+			res.send(e + stu);
+		});
+
+        
+	}
+}
 
 
 

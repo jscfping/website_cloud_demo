@@ -13,10 +13,10 @@
 				<form action="/backstage/user/<%= user._id %>" method="post">
 					<h3 class="form-inline">username: <%= user.username %></h3>
 					<h3 class="form-inline">password: <%= user.password %>(this would be salt and hash)</h3>
-					<h3 class="form-inline">nicename: <%= user.nickname %><input type="text" class="form-control" name="user[nickname]"></h3>
-					<h3 class="form-inline">age: <%= user.age %><input type="text" class="form-control" name="user[age]"></h3>
-					<h3 class="form-inline">money: <%= user.cash %><input type="text" class="form-control" name="user[cash]"></h3>
-					<h3 class="form-inline">location: <%= user.location %><input type="text" class="form-control" name="user[location]"></h3>
+					<h3 class="form-inline">nicename: <input type="text" class="form-control" name="user[nickname]" value="<%= user.nickname %>"></h3>
+					<h3 class="form-inline">age: <input type="number" class="form-control" name="user[age]" value="<%= user.age %>"></h3>
+					<h3 class="form-inline">money: <input type="number" class="form-control" name="user[cash]" value="<%= user.cash %>"></h3>
+					<h3 class="form-inline">location: <input type="text" class="form-control" name="user[location]" value="<%= user.location %>"></h3>
 					
 					<h3>shoppinglist:</h3>
 					<% user.shoppinglist.forEach(function(el){ %>
@@ -45,12 +45,12 @@
 			<h5 class="card-header"><%= treasure._id %></h5>
 			<div class="card-body">
 				<form action="/backstage/treasure/<%= treasure._id %>" method="post">
-					<h3 class="form-inline">id: <%= treasure.id %><input type="text" class="form-control" name="treasure[id]"></h3>
-					<h3 class="form-inline">name: <%= treasure.name %><input type="text" class="form-control" name="treasure[name]"></h3>
-					<h3 class="form-inline"><img src="<%= treasure.image %>"><input type="text" class="form-control" name="treasure[image]"></h3>
-					<h3 class="form-inline">desc: <%= treasure.description %><input type="text" class="form-control" name="treasure[description]"></h3>
-					<h3 class="form-inline">price: <%= treasure.price %><input type="number" class="form-control" name="treasure[price]"></h3>
-					<h3 class="form-inline">stocks: <%= treasure.stocks %><input type="number" class="form-control" name="treasure[stocks]"></h3>
+					<h3 class="form-inline">id: <input type="text" class="form-control" name="treasure[id]" value="<%= treasure.id %>"></h3>
+					<h3 class="form-inline">name: <input type="text" class="form-control" name="treasure[name]" value="<%= treasure.name %>"></h3>
+					<h3 class="form-inline"><img src="<%= treasure.image %>"><input type="text" class="form-control" name="treasure[image]" value="<%= treasure.image %>"></h3>
+					<h3 class="form-inline">desc: <input type="text" class="form-control" name="treasure[description]" value="<%= treasure.description %>"></h3>
+					<h3 class="form-inline">price: <input type="number" class="form-control" name="treasure[price]" value="<%= treasure.price %>"></h3>
+					<h3 class="form-inline">stocks: <input type="number" class="form-control" name="treasure[stocks]" value="<%= treasure.stocks %>"></h3>
 					<button type="submit" class="btn btn-warning ">UPDATE!</button>
 				</form>
 			</div>
@@ -65,12 +65,15 @@
 			<div class="card-body">
 				<form action="/backstage/article/<%= article._id %>" method="post">
 
-					<h3 class="form-inline">title: <%= article.title %><input type="text" class="form-control" name="article[title]"></h3>
-					<h3 class="form-inline">description: <%= article.description %><input type="text" class="form-control" name="article[description]"></h3>
-					<h3 class="form-inline">authorid: <%= article.authorid %><input type="text" class="form-control" name="article[authorid]"></h3>
-					<h3 class="form-inline">created: <%= article.created %><input type="text" class="form-control" name="article[created]" placeholder="use UTC number"></h3>
-					<h3 class="form-inline">isedited: <%= article.isedited %><input type="checkbox" class="form-control" name="article[isedited]"></h3>
-					<h3 class="form-inline">edited: <%= article.edited %><input type="text" class="form-control" name="article[edited]" placeholder="use UTC number"></h3>
+					<h3 class="form-inline">title: <input type="text" class="form-control" name="article[title]" value="<%= article.title %>"></h3>
+					<h3 class="form-inline">
+						description: 
+						<textarea name="article[description]" class="form-control" rows="5"><%= article.description %></textarea>
+					</h3>
+					<!-- <h3 class="form-inline">authorid: <input type="text" class="form-control" name="article[authorid]" value="<%= article.authorid %>"></h3>
+					<h3 class="form-inline">created: <input type="text" class="form-control" name="article[created]" value="<%= article.created %>"></h3>
+					<h3 class="form-inline">isedited: <input type="checkbox" class="form-control" name="article[isedited]" value="<%= article.isedited %>"></h3>
+					<h3 class="form-inline">edited: <input type="text" class="form-control" name="article[edited]" value="<%= article.edited %>"></h3> -->
 					<button type="submit" class="btn btn-warning ">UPDATE!</button>
 				</form>
 			</div>

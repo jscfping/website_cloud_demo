@@ -146,420 +146,27 @@ app.get("/logout", function(req, res){
 });
 
 
-
-
-
-
-app.get("/user",
-	middleware.isLogIned,
-	middleware.findUser, //it can be rebased with closure
-	middleware.findAllTreasures,
-	middleware.findUserArticles,
-	middleware.findUserDeallogs,
-	function(req, res){
-		res.render("users/account", {
-			user: res.locals.foundUser,
-			foundAllTreasures: res.locals.foundAllTreasures,
-			foundUserArticles: res.locals.foundUserArticles,
-			foundUserDeallogs: res.locals.foundUserDeallogs
-		});
-});
-
-
-
-app.get("/user/edit", middleware.isLogIned,	function(req, res){
-	User.findOne({_id: req.user._id}, function(err, found){
-	    if (err) {
-	    	console.log(err);
-			res.send("error! user not found...");
-	    }
-	    else {
-	        res.render("users/edit", {user: found});
-	    }
-	});
-});
-
-app.put("/user/",
-	middleware.isLogIned,
-	middleware.updateUser, //be care for someone edit his cash...
-	function(req, res){
-	    res.redirect("/user");
-});
-
-
-
-app.get("/user/:id",
-	middleware.findAllTreasures,
-	middleware.findUserUrlById(),
-	//{authorid: res.locals.user._id}
-	middleware.findArticle("foundUserArticles", [], [["authorid", "locals", "user", "_id"]]),
-	function(req, res){
-		res.render("users/userpage");
-});
-
-
-
-
-
-
-
-//articles (pbulic)
-//
-//
-
-//R
-app.get("/articles", function(req, res){
-    //if author:{id, username}
-	//what in populate run needs a OBJECTIDTYPE, not for author(get a []) but author.id
-	//and can be id's array
-	//after expansion, the origin obj id would add mongoose's _id and other data
-	// like author.id, author.id._id
-	var entry = "/articles/"
-	Article.find().populate("authorid").exec(function(err, allarticles){
-	    if (err) {
-	    	console.log(err);
-			res.send("article found error!");
-	    }
-	    else {
-	        res.render("articles/dev", {allarticles: allarticles, entry: entry}); 
-	    }
-	});
-});
-
-
-app.get("/articles/new", middleware.isLogIned, function(req, res){
-	var entry = "/articles/"
-	res.render("articles/new", {entry: entry}); 
-});
-
-
-
-//C
-app.post("/articles", middleware.isLogIned, function(req, res){
-	
-	var newArticle = new Article(req.body.article);
-	newArticle.authorid = req.user._id;
-	
-	newArticle.save(function (err, article) {
-        if (err){
-			console.log(err);
-		    res.send("article created error!");
-	    }
-		else{
-			User.findOne({_id: req.user._id}, (err, founduser)=>{
-				if(err){
-					console.log(err);
-		            res.send("find user whom the article belonged to  error!");
-				}
-				else{
-					founduser.articles.push(newArticle._id);
-					User.updateOne({_id: req.user._id}, founduser, function(err, sign){
-	                    if(err){
-	                        console.log(err);
-							res.send("update user whom the article belonged to  error!");
-	                    }
-	                	else{
-	                        res.redirect("/articles/");
-	                    }
-	                });
-				}
-			});
-
-		}
-     });
-});
-
-
-//U
-app.get("/articles/:id/edit", middleware.checkOwnArticle, function(req, res){
-	var entry = "/articles/";
-	Article.findOne({ _id: req.params.id}, function(err, article){
-	    if(err){
-	        console.log(err);
-			res.send("articles database found error...");
-	    }
-		else{
-	        res.render("articles/edit", {article: article, entry:entry});
-	    }
-	});
-});
-
-app.put("/articles/:id", middleware.checkOwnArticle, function(req, res){
-	
-	var newdata = req.body.article;
-	newdata.isedited = true;
-	newdata.edited = new Date;
-	
-	//req.body.blog.body = req.sanitize(req.body.blog.body);wait for update
-	Article.updateOne({ _id: req.params.id}, newdata, function(err, sign){
-	    if(err){
-			console.log(err);
-			res.send("articles database updated error...");
-	    }
-		else{
-			res.redirect("/articles/");
-	    }
-		
-	});
-
-});
-
-
-
-//D
-app.delete("/articles/:id", middleware.checkOwnArticle, function(req, res){
-	Article.deleteOne({_id: req.params.id}, function(err){
-		if(err){
-			console.log(err);
-			res.send("articles database deleded error...");
-		}
-		User.findOne({_id: req.user._id}, (err, foundusr)=>{
-
-			if(err){
-				console.log(err);
-			    res.send("user database find error...");
-			}
-			else{
-				for(var i=0; i<foundusr.articles.length; i++){
-					if(foundusr.articles[i]._id.toString() === req.params.id.toString()){
-						foundusr.articles.splice(i,1);
-						break;
-					}
-				}
-	
-				User.updateOne({_id: req.user._id}, foundusr, (err, sign)=>{
-					if(err){
-						console.log(err);
-						res.send("user database updated error...");
-					}
-					else{
-                        res.redirect("/articles");
-					}
-
-				});
-			}
-
-			
-		});
-		
-	});
-});
-
-
-
-
-
-
-//articles (private)
-//it can be add a function to judge entry to redirect proper place to make code more dry!!!
-//
-
-//R
-app.get("/myarticles", middleware.isLogIned, function(req, res){
-
-	var entry = "/myarticles/";
-	Article.find({authorid: req.user._id}).populate("authorid").exec(function(err, myarticles){
-	    if (err) {
-	    	console.log(err);
-			res.send("article found error!");
-	    }
-	    else {
-	        res.render("articles/dev", {allarticles: myarticles, entry:entry}); 
-	    }
-	});
-});
-
-app.get("/myarticles/new", middleware.isLogIned, function(req, res){
-	var entry = "/myarticles/"
-	res.render("articles/new", {entry: entry}); 
-});
-
-
-//C
-app.post("/myarticles", middleware.isLogIned, function(req, res){
-	
-	var newArticle = new Article(req.body.article);
-	newArticle.authorid = req.user._id;
-	
-	newArticle.save(function (err, article) {
-        if (err){
-			console.log(err);
-		    res.send("article created error!");
-	    }
-		else{
-			User.findOne({_id: req.user._id}, (err, founduser)=>{
-				if(err){
-					console.log(err);
-		            res.send("find user whom the article belonged to  error!");
-				}
-				else{
-					founduser.articles.push(newArticle._id);
-					User.updateOne({_id: req.user._id}, founduser, function(err, sign){
-	                    if(err){
-	                        console.log(err);
-							res.send("update user whom the article belonged to  error!");
-	                    }
-	                	else{
-	                        res.redirect("/myarticles/");
-	                    }
-	                });
-				}
-			});
-
-		}
-     });
-});
-
-
-//U
-app.get("/myarticles/:id/edit", middleware.checkOwnArticle, function(req, res){
-	var entry = "/myarticles/";
-	Article.findOne({ _id: req.params.id}, function(err, article){
-	    if(err){
-	        console.log(err);
-			res.send("articles database found error...");
-	    }
-		else{
-	        res.render("articles/edit", {article: article, entry:entry});
-	    }
-	});
-});
-
-app.put("/myarticles/:id", middleware.checkOwnArticle, function(req, res){
-	
-	var newdata = req.body.article;
-	newdata.isedited = true;
-	newdata.edited = new Date;
-	
-	//req.body.blog.body = req.sanitize(req.body.blog.body);wait for update
-	Article.updateOne({ _id: req.params.id}, newdata, function(err, sign){
-	    if(err){
-			console.log(err);
-			res.send("articles database updated error...");
-	    }
-		else{
-			res.redirect("/myarticles/");
-	    }
-		
-	});
-
-});
-
-
-
-//D
-app.delete("/myarticles/:id", middleware.checkOwnArticle, function(req, res){
-	Article.deleteOne({_id: req.params.id}, function(err){
-		if(err){
-			console.log(err);
-			res.send("articles database deleded error...");
-		}
-		User.findOne({_id: req.user._id}, (err, foundusr)=>{
-
-			if(err){
-				console.log(err);
-			    res.send("user database find error...");
-			}
-			else{
-				for(var i=0; i<foundusr.articles.length; i++){
-					if(foundusr.articles[i]._id.toString() === req.params.id.toString()){
-						foundusr.articles.splice(i,1);
-						break;
-					}
-				}
-	
-				User.updateOne({_id: req.user._id}, foundusr, (err, sign)=>{
-					if(err){
-						console.log(err);
-						res.send("user database updated error...");
-					}
-					else{
-                        res.redirect("/myarticles");
-					}
-
-				});
-			}
-
-			
-		});
-		
-	});
-});
-
-
-
-
-
-
-
-//treasures
-//
-//
-app.get("/treasures", function(req, res){
-	
-	Treasure.find({}, function(err, founds){
-	    if (err) {
-	    	console.log(err);
-			res.send("error!");
-	    }
-	    else {
-	        res.render("treasures/dev", {alltreasures: founds}); 
-	    }
-	});
-
-});
-
-app.get("/treasures/:id", function(req, res){
-	
-	Treasure.findOne({_id: req.params.id}, function(err, found){
-	    if (err) {
-	    	console.log(err);
-			res.send("found treasure error!");
-	    }
-	    else {
-	        res.render("treasures/show", {treasure: found}); 
-	    }
-	});
-
-});
-
-
-
-
-
-
-
-
-//show shoppinglist
-app.get("/shoppinglist",
-	middleware.isLogIned,
-	middleware.getShoppingListRecipe,
-	function(req, res){
-	    res.render("users/shoppinglist");
-});
-
-//shopping list add function
-app.put("/shoppinglist/:id",
-	middleware.isLogIned,
-	middleware.chkMarketOffReq,
-	middleware.marketOff,
-	middleware.shopListIn,
-	function(req, res){
-	    res.redirect("/shoppinglist");
-});
-
-//shopping list pop function
-app.delete("/shoppinglist/:id",
-	middleware.isLogIned,
-	middleware.chkShopListOutReq,
-    middleware.shopListOut,
-    middleware.marketOn,
-	function(req, res){
-	    res.redirect("/shoppinglist");
-});
-
-
-
+// user routes
+var userRoutes = require("./routes/user");
+app.use("/user", userRoutes);
+
+//articles routes (pbulic) would to be rebase between public and private
+//it can be add a function to judge entry to redirect proper place to make code more dry
+var articlesRoutes = require("./routes/articles");
+app.use("/articles", articlesRoutes);
+
+//articles routes (private)
+var myarticlesRoutes = require("./routes/myarticles");
+app.use("/myarticles", myarticlesRoutes);
+
+
+//treasures routes
+var treasuresRoutes = require("./routes/treasures");
+app.use("/treasures", treasuresRoutes);
+
+//shoppinglist routes
+var shoppinglistRoutes = require("./routes/shoppinglist");
+app.use("/shoppinglist", shoppinglistRoutes);
 
 //checkout
 //
@@ -579,49 +186,23 @@ app.post("/checkout",
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//events
-//
-//
+//events routes
 var eventRoutes    = require("./routes/events");
 app.use("/events", eventRoutes);
 
-
+//backstage routes
 var backstageRoutes    = require("./routes/backstage");
 app.use("/backstage", backstageRoutes);
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+// others
+//
+//
 app.get("/getcash", middleware.isLogIned, function(req, res){
 	
-	if(req.user){ //can be better
+	if(req.user){ //to be rebase
 	    User.findOne({_id: req.user._id}, function(err, found){
 	    	if(err){
 	    		console.log(err);
@@ -647,8 +228,6 @@ app.get("/getcash", middleware.isLogIned, function(req, res){
 
 
 
-
-
 app.get("/replenishment",
 	middleware.isLogIned,
 	middleware.isStockOut,
@@ -671,28 +250,3 @@ app.listen(3000, function(){
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-function UTC(x){
-	if(x){
-        return x.getTime().toString()
-    }
-}
-
-//useless
-function checkInObjHasNull(obj){
-	var propertyary = Object.keys(obj)
-	for(var i=0; i<propertyary.length; i++){
-		if(!x[propertyary[i]]) return true;
-	}
-	return false;
-};
