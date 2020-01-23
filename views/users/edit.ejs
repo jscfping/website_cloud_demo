@@ -12,6 +12,10 @@
 			<form action="/user?_method=put" method="POST">
 				<h6>暱稱:</h6>
 				<input type="text" name=user[nickname] value="<%= user.nickname %>" class="form-control">
+				<h6>年齡:</h6>
+				<input type="number" name=user[age] value="<%= user.age %>" class="form-control">
+				<h6>來自:</h6>
+				<input type="text" name=user[location] value="<%= user.location %>" class="form-control">
 				<h6 class="card-text">自我介紹:</h6>
 					<% if(!user.desc){ %>
 						<% user.desc = "填一點自我介紹吧..." %>

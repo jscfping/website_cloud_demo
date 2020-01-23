@@ -4,92 +4,129 @@
 
 <div class="container">
 
-	<h1>Here are all users:</h1>
-	<% foundAllUsers.forEach(function(user){ %>
+	<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+		使用者帳號列表
+	</button>
+	<div class="collapse" id="collapseUsers">
+		<% foundAllUsers.forEach(function(user){ %>
 
-		<div class="card border-primary text-primary">
-			<h5 class="card-header"><%= user._id %></h5>
-			<div class="card-body">
-				<form action="/backstage/user/<%= user._id %>" method="post">
-					<h3 class="form-inline">username: <%= user.username %></h3>
-					<h3 class="form-inline">password: <%= user.password %>(this would be salt and hash)</h3>
-					<h3 class="form-inline">nicename: <input type="text" class="form-control" name="user[nickname]" value="<%= user.nickname %>"></h3>
-					<h3 class="form-inline">age: <input type="number" class="form-control" name="user[age]" value="<%= user.age %>"></h3>
-					<h3 class="form-inline">money: <input type="number" class="form-control" name="user[cash]" value="<%= user.cash %>"></h3>
-					<h3 class="form-inline">location: <input type="text" class="form-control" name="user[location]" value="<%= user.location %>"></h3>
+			<div class="card border-primary text-primary">
+				<h5 class="card-header"><%= user._id %></h5>
+				<div class="card-body">
+					<form action="/backstage/user/<%= user._id %>?_method=PUT" method="post">
+						<h3 class="form-inline">username: <%= user.username %></h3>
+						<h3 class="form-inline">password: <%= user.password %>(this would be salt and hash)</h3>
+						<h3 class="form-inline">nicename: <input type="text" class="form-control" name="user[nickname]" value="<%= user.nickname %>"></h3>
+						<h3 class="form-inline">age: <input type="number" class="form-control" name="user[age]" value="<%= user.age %>"></h3>
+						<h3 class="form-inline">money: <input type="number" class="form-control" name="user[cash]" value="<%= user.cash %>"></h3>
+						<h3 class="form-inline">location: <input type="text" class="form-control" name="user[location]" value="<%= user.location %>"></h3>
+						
+						<h3>shoppinglist:</h3>
+						<% user.shoppinglist.forEach(function(el){ %>
+							<h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
+						<% });%>
 					
-					<h3>shoppinglist:</h3>
-					<% user.shoppinglist.forEach(function(el){ %>
-						<h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
-					<% });%>
-				
-					<h3>deallog:</h3>
-					<% user.deallog.forEach(function(el){ %>
-						<h6>id:<%= el._id %></h6>
-					<% });%>
-				
-					<h3>treasures:</h3>
-					<% user.treasures.forEach(function(el){ %>
-						<h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
-					<% });%>
-					<button type="submit" class="btn btn-warning ">UPDATE!</button>
-				</form>
+						<h3>deallog:</h3>
+						<% user.deallog.forEach(function(el){ %>
+							<h6>id:<%= el._id %></h6>
+						<% });%>
+					
+						<h3>treasures:</h3>
+						<% user.treasures.forEach(function(el){ %>
+							<h6>id:<%= el.id %>, qty:<%= el.qty %></h6>
+						<% });%>
+						<button type="submit" class="btn btn-warning ">UPDATE!</button>
+					</form>
+				</div>
 			</div>
-		</div>
-	<% }); %>
+		<% }); %>
+	</div>
 
 	<hr>
 
-	<% foundAllTreasures.forEach(function(treasure){ %>
+	<button class="btn btn-outline-success" type="button" data-toggle="collapse" data-target="#collapseTreasures" aria-expanded="false" aria-controls="collapseTreasures">
+		寶物列表
+	</button>
+	<div class="collapse" id="collapseTreasures">
 		<div class="card border-success text-success">
-			<h5 class="card-header"><%= treasure._id %></h5>
+			<h5 class="card-header">新增寶物</h5>
 			<div class="card-body">
-				<form action="/backstage/treasure/<%= treasure._id %>" method="post">
-					<h3 class="form-inline">id: <input type="text" class="form-control" name="treasure[id]" value="<%= treasure.id %>"></h3>
-					<h3 class="form-inline">name: <input type="text" class="form-control" name="treasure[name]" value="<%= treasure.name %>"></h3>
-					<h3 class="form-inline"><img src="<%= treasure.image %>"><input type="text" class="form-control" name="treasure[image]" value="<%= treasure.image %>"></h3>
-					<h3 class="form-inline">desc: <input type="text" class="form-control" name="treasure[description]" value="<%= treasure.description %>"></h3>
-					<h3 class="form-inline">price: <input type="number" class="form-control" name="treasure[price]" value="<%= treasure.price %>"></h3>
-					<h3 class="form-inline">stocks: <input type="number" class="form-control" name="treasure[stocks]" value="<%= treasure.stocks %>"></h3>
-					<button type="submit" class="btn btn-warning ">UPDATE!</button>
+				<form action="/backstage/treasure" method="post">
+					<h3 class="form-inline">id: <input type="text" class="form-control" name="treasure[id]"></h3>
+					<h3 class="form-inline">name: <input type="text" class="form-control" name="treasure[name]"></h3>
+					<h3 class="form-inline">圖片網址:<input type="text" class="form-control" name="treasure[image]"></h3>
+					<h3 class="form-inline">desc: <input type="text" class="form-control" name="treasure[description]"></h3>
+					<h3 class="form-inline">price: <input type="number" class="form-control" name="treasure[price]"></h3>
+					<h3 class="form-inline">stocks: <input type="number" class="form-control" name="treasure[stocks]"></h3>
+					<button type="submit" class="btn btn-warning ">新增!</button>
 				</form>
 			</div>
 		</div>
-	<% }); %>
+		<% foundAllTreasures.forEach(function(treasure){ %>
+			<div class="card border-success text-success">
+				<h5 class="card-header"><%= treasure._id %></h5>
+				<div class="card-body">
+					<form action="/backstage/treasure/<%= treasure._id %>?_method=PUT" method="post">
+						<h3 class="form-inline">id: <input type="text" class="form-control" name="treasure[id]" value="<%= treasure.id %>"></h3>
+						<h3 class="form-inline">name: <input type="text" class="form-control" name="treasure[name]" value="<%= treasure.name %>"></h3>
+						<h3 class="form-inline"><img src="<%= treasure.image %>"><input type="text" class="form-control" name="treasure[image]" value="<%= treasure.image %>"></h3>
+						<h3 class="form-inline">desc: <input type="text" class="form-control" name="treasure[description]" value="<%= treasure.description %>"></h3>
+						<h3 class="form-inline">price: <input type="number" class="form-control" name="treasure[price]" value="<%= treasure.price %>"></h3>
+						<h3 class="form-inline">stocks: <input type="number" class="form-control" name="treasure[stocks]" value="<%= treasure.stocks %>"></h3>
+						<button type="submit" class="btn btn-warning ">UPDATE!</button>
+					</form>
+					<form action="/backstage/treasure/<%= treasure._id %>?_method=DELETE" method="post">
+						<button type="submit" class="btn btn-danger btn-sm" title="若此寶物已有人擁有則會發生錯誤，因為購物車、擁有寶物、交易記錄、移除功能尚未建立完全">DELETE!</button>
+					</form>
+				</div>
+			</div>
+		<% }); %>
+	</div>
 
 	<hr>
 
-	<% foundAllArticles.forEach(function(article){ %>
+	<button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseArticles" aria-expanded="false" aria-controls="collapseArticles">
+		文章列表
+	</button>
+	<div class="collapse" id="collapseArticles">
 		<div class="card border-info text-info">
-			<h5 class="card-header"><%= article._id %></h5>
+			<h5 class="card-header">幫人新增文章</h5>
 			<div class="card-body">
-				<form action="/backstage/article/<%= article._id %>" method="post">
-
-					<h3 class="form-inline">title: <input type="text" class="form-control" name="article[title]" value="<%= article.title %>"></h3>
+				<form action="/backstage/article" method="post">
+					<h3 class="form-inline">title: <input type="text" class="form-control" name="article[title]"></h3>
 					<h3 class="form-inline">
 						description: 
-						<textarea name="article[description]" class="form-control" rows="5"><%= article.description %></textarea>
+						<textarea name="article[description]" class="form-control" rows="5"></textarea>
 					</h3>
-					<!-- <h3 class="form-inline">authorid: <input type="text" class="form-control" name="article[authorid]" value="<%= article.authorid %>"></h3>
-					<h3 class="form-inline">created: <input type="text" class="form-control" name="article[created]" value="<%= article.created %>"></h3>
-					<h3 class="form-inline">isedited: <input type="checkbox" class="form-control" name="article[isedited]" value="<%= article.isedited %>"></h3>
-					<h3 class="form-inline">edited: <input type="text" class="form-control" name="article[edited]" value="<%= article.edited %>"></h3> -->
-					<button type="submit" class="btn btn-warning ">UPDATE!</button>
+					<h3 class="form-inline">authorid: <input type="text" class="form-control" name="article[authorid]"></h3>
+					<button type="submit" class="btn btn-warning ">新增!</button>
 				</form>
 			</div>
 		</div>
-	<% }); %>
-
+		<% foundAllArticles.forEach(function(article){ %>
+			<div class="card border-info text-info">
+				<h5 class="card-header"><%= article._id %></h5>
+				<div class="card-body">
+					<form action="/backstage/article/<%= article._id %>?_method=PUT" method="post">
 	
-		
-		
-			
-		
-			
-
-	<hr>
-	<hr>
-	<hr>
+						<h3 class="form-inline">title: <input type="text" class="form-control" name="article[title]" value="<%= article.title %>"></h3>
+						<h3 class="form-inline">
+							description: 
+							<textarea name="article[description]" class="form-control" rows="5"><%= article.description %></textarea>
+						</h3>
+						<h3 class="form-inline">authorid: <%= article.authorid %></h3>
+						<!-- <h3 class="form-inline">created: <input type="text" class="form-control" name="article[created]" value="<%= article.created %>"></h3>
+						<h3 class="form-inline">isedited: <input type="checkbox" class="form-control" name="article[isedited]" value="<%= article.isedited %>"></h3>
+						<h3 class="form-inline">edited: <input type="text" class="form-control" name="article[edited]" value="<%= article.edited %>"></h3> -->
+						<button type="submit" class="btn btn-warning ">UPDATE!</button>
+					</form>
+					<form action="/backstage/article/<%= article._id %>?_method=DELETE" method="post">
+						<button type="submit" class="btn btn-danger btn-sm">DELETE!</button>
+					</form>
+				</div>
+			</div>
+		<% }); %>
+	</div>
 
 	
 	

@@ -518,6 +518,8 @@ middleware.updateUser = function(req, res, next){
 	     (resolve, reject)=>{
 			resolve.nickname = req.body.user.nickname;
 			resolve.desc = req.body.user.desc;
+			resolve.age = req.body.user.age;
+			resolve.location = req.body.user.location;
 			
 			dbfunc.updateById(User, req.user._id, resolve).then(()=>{
 		        next();
@@ -690,14 +692,52 @@ middleware.findArticle = (packString, rqA, rsA)=>{
 	}
 }
 
+// dbfunc.createBySha = function(newone)
+middleware.create = (schema, packString, rqAry, rsAry)=>{
+	return function(req, res, next){
+		var stu = "......@create with" + schema;
+		var newOne = {};
+		var reqArray = JSON.parse(JSON.stringify(rqAry)); //deep clone!!!
+		var resArray = JSON.parse(JSON.stringify(rsAry));
 
+		//make newOne to search by req
+		for(var i=0; i<reqArray.length; i++){
+			var prop = reqArray[i].shift();
+			var tmp = req;
+			while(reqArray[i].length>0){
+				tmp = tmp[reqArray[i].shift()];
+			}
+			newOne[prop] = tmp;
+		}
 
-middleware.update = (schema, packString, rqA, rsA)=>{
+		//make newOne to search by res
+        for(var i=0; i<resArray.length; i++){
+			var prop = resArray[i].shift();
+			var tmp = res;
+			while(resArray[i].length>0){
+				tmp = tmp[resArray[i].shift()];
+			}
+			newOne[prop] = tmp;
+		}
+
+		newOne = new mongooseSchema[schema](newOne);
+
+		dbfunc.createBySha(newOne).then(()=>{
+			res.locals[packString] = newOne;
+			next();
+		}).catch((e)=>{
+			res.send(e + stu);
+		});
+
+	}
+}
+
+middleware.update = (schema, packString, rqAry, rsAry)=>{
 	return function(req, res, next){
 		var stu = "......@update with" + schema;
 		var renew = {};
-		var reqArray = JSON.parse(JSON.stringify(rqA)); //deep clone!!!
-		var resArray = JSON.parse(JSON.stringify(rsA));
+		var reqArray = JSON.parse(JSON.stringify(rqAry)); //deep clone!!!
+		var resArray = JSON.parse(JSON.stringify(rsAry));
 
 		//make renew to search by req
 		for(var i=0; i<reqArray.length; i++){
@@ -718,7 +758,7 @@ middleware.update = (schema, packString, rqA, rsA)=>{
 			}
 			renew[prop] = tmp;
 		}
-		
+		//id would be updated... maybe add a parameter to handle
 		dbfunc.updateById(mongooseSchema[schema], req.params.id, renew).then(()=>{
 			res.locals[packString] = renew;
 			next();
@@ -731,6 +771,154 @@ middleware.update = (schema, packString, rqA, rsA)=>{
 }
 
 
+middleware.pushTo = (schema, packString, rqAry, rsAry)=>{
+	return function(req, res, next){
+		var stu = "......@pushTo with" + schema;
+		var reqArray = JSON.parse(JSON.stringify(rqAry)); //deep clone!!!
+		var resArray = JSON.parse(JSON.stringify(rsAry));
+
+		dbfunc.findById(mongooseSchema[schema], res.locals.passingStr).then((resolve)=>{
+			var renew = resolve;
+			//make renew to search by req
+		    for(var i=0; i<reqArray.length; i++){
+				var prop = reqArray[i].shift();
+				var tmp = req;
+				while(reqArray[i].length>0){
+					tmp = tmp[reqArray[i].shift()];
+				}
+				renew[prop].push(tmp);
+			}
+	
+			//make renew to search by res
+			for(var i=0; i<resArray.length; i++){
+				var prop = resArray[i].shift();
+				var tmp = res;
+				while(resArray[i].length>0){
+					tmp = tmp[resArray[i].shift()];
+				}
+				renew[prop].push(tmp);
+			}
+			
+			//to be better
+			dbfunc.updateById(mongooseSchema[schema], res.locals.passingStr, renew).then(()=>{
+				res.locals[packString] = renew;
+				next();
+			}).catch((e)=>{
+				res.send(e + stu);
+			});
+		}).catch((e)=>{
+			res.send(e + stu);
+		});
+
+		
+
+        
+	}
+}
+//to be update for vab how many times
+middleware.popFrom = (schema, packString, Ay)=>{
+	return function(req, res, next){
+		var stu = "......@popFrom with" + schema;
+		var Ary = JSON.parse(JSON.stringify(Ay)); //deep clone!!!
+
+		console.log(">>>>>>>>>>>>>>>>>>>>>>>>")
+		console.log(res.locals.passingStr);
+		dbfunc.findById(mongooseSchema[schema], res.locals.passingStr).then((resolve)=>{
+
+		    for(var i=0; i<Ary.length; i++){
+				var tmp = resolve;
+				while(Ary[i].length>0){
+					tmp = tmp[Ary[i].shift()];
+				}
+				tmp.pop();
+			}
+
+			//to be better
+			dbfunc.updateById(mongooseSchema[schema], res.locals.passingStr, resolve).then(()=>{
+				res.locals[packString] = resolve;
+				next();
+			}).catch((e)=>{
+				res.send(e + stu);
+			});
+		}).catch((e)=>{
+			res.send(e + stu);
+		});
+	}
+}
+
+middleware.passingStr = (rqAry, rsAry)=>{
+	return function(req, res, next){
+		var reqArray = JSON.parse(JSON.stringify(rqAry)); //deep clone!!!
+		var resArray = JSON.parse(JSON.stringify(rsAry));
+
+		for(var i=0; i<reqArray.length; i++){
+			var tmp = req;
+			while(reqArray[i].length>0){
+				tmp = tmp[reqArray[i].shift()];
+			}
+			res.locals.passingStr = tmp;
+		}
+
+        for(var i=0; i<resArray.length; i++){
+			var tmp = res;
+			while(resArray[i].length>0){
+				tmp = tmp[resArray[i].shift()];
+			}
+			res.locals.passingStr = tmp;
+		}
+		res.locals.passingStr = res.locals.passingStr.toString();
+		next();
+	}
+}
+
+
+middleware.deleteArticle = (req, res, next)=>{
+	var stu = "......@deleteArticle";
+	Article.findOne({_id: req.params.id}, (err, foundarticle)=>{
+		if(err){
+			res.send(err + stu);
+		}
+		User.findOne({_id: foundarticle.authorid}, (err, foundusr)=>{
+			if(err){
+				res.send(err + stu);
+			}
+			else{
+				for(var i=0; i<foundusr.articles.length; i++){
+					if(foundusr.articles[i]._id.toString() === req.params.id.toString()){
+						foundusr.articles.splice(i,1);
+						break;
+					}
+				}
+	
+				User.updateOne({_id: foundarticle.authorid}, foundusr, (err, sign)=>{
+					if(err){
+						res.send(err + stu);
+					}
+					else{
+						Article.deleteOne({_id: req.params.id}, function(err){
+							if(err){
+								res.send(err + stu);
+							}
+							next();
+						});
+					}
+
+				});
+			}
+		});
+	});
+}
+
+middleware.delete = (schema) => {
+	return (req, res, next) => {
+        mongooseSchema[schema].deleteOne({_id: req.params.id}, function(err){
+			if(err){
+				res.send(err + stu);
+			}
+			next();
+		});
+	};
+};
 
 middleware.findAllUsers = function(req, res, next){
 	var stu = "......@findAllUser";
