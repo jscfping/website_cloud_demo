@@ -47,8 +47,8 @@ passport.deserializeUser(User.deserializeUser());
 
 
 // res.locals is form express
-// for every req, would add a currentUser to res in ejs
-// req.user is from...???
+// for every req, would add a currentUser to res in ejs (locals)
+// req.user is from passport for a authenticated user
 app.use(function(req, res, next){
 	res.locals.currentUser = req.user;
 	next();
