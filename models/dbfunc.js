@@ -82,13 +82,13 @@ dbfunc.findsByProp = function(objSchema, prop){
 dbfunc.findIds = function(objSchema, idArray){
 	return new Promise(function(resolve, reject){
 
-		var mongooseIdAry = [];
-		idArray.forEach(el => {
-			mongooseIdAry.push(mongoose.Types.ObjectId(el));
-		});
+		//var mongooseIdAry = [];
+		//idArray.forEach(el => {
+		//	mongooseIdAry.push(mongoose.Types.ObjectId(el));
+		//});
 
 		objSchema.find({
-			_id: {$in:mongooseIdAry}
+			_id: {$in:idArray}
 		}, function(err, found){
 		    if(err){
 				console.log(err);
