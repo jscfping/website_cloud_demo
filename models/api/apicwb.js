@@ -1,12 +1,9 @@
 var request = require("request");
 
 
-var keyy = require("../../keyy");
+var exeParas = require("../../exeParas");
 var apiCWB = {};
-var url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=" +
-    keyy.cwbkey +
-	"&format=JSON&locationName=%E8%87%BA%E4%B8%AD%E5%B8%82&elementName=Wx,PoP,CI,MinT,MaxT";
-
+var url = `https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=${exeParas.apiCWBKey}&format=JSON&locationName=%E8%87%BA%E4%B8%AD%E5%B8%82&elementName=Wx,PoP,CI,MinT,MaxT`;
 
 
 
