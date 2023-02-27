@@ -1,3 +1,6 @@
+const exeParas = require("./exeParas");
+
+
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
@@ -245,8 +248,8 @@ app.get("*",function(req, res){
 
 
 
-app.listen(3000, function(){
-   console.log("The Server Has Started...");
+app.listen(exeParas.executingPort, function(){
+   console.log(`The Server is running at: http://localhost:${exeParas.executingPort}`);
 });
 
 
