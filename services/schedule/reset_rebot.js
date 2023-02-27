@@ -1,17 +1,17 @@
 var reset_rebot = {};
-var config = require("./config");
+var config = require("../../models/config");
 
 var mongoose = require("mongoose");
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect("mongodb://localhost/cloud_demo", { useNewUrlParser: true });
 
 
-var User = require("./user");
-var Article = require("./article");
-var Treasure = require("./treasure");
-var Event = require("./event");
-var Dealterm = require("./deallog/dealrecipe");
-var Dealrecipe = require("./deallog/dealterm");
+var User = require("../../models/user");
+var Article = require("../../models/article");
+var Treasure = require("../../models/treasure");
+var Event = require("../../models/event");
+var Dealterm = require("../../models/deallog/dealrecipe");
+var Dealrecipe = require("../../models/deallog/dealterm");
 
 
 

@@ -61,7 +61,7 @@ app.use(function(req, res, next){
 //set up middleware
 var middleware = require("./models/middleware");
 var dbfunc = require("./models/dbfunc");
-var reset_rebot = require("./models/reset_rebot");
+var reset_rebot = require("./services//schedule/reset_rebot");
 var config = require("./models/config");
 
 if(config.isAutoReset){
