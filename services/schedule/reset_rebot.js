@@ -1,10 +1,6 @@
 var reset_rebot = {};
 var config = require("../../models/config");
 
-var mongoose = require("mongoose");
-mongoose.set("useUnifiedTopology", true);
-mongoose.connect("mongodb://localhost/cloud_demo", { useNewUrlParser: true });
-
 
 var User = require("../../models/user");
 var Article = require("../../models/article");

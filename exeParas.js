@@ -5,5 +5,6 @@ dotenv.config();
 
 module.exports = {
 	executingPort: process.env.executingPort,
-	apiCWBKey: process.env.apiCWBKey
+	apiCWBKey: process.env.apiCWBKey,
+	mongoDBConnectString: process.env.mongoDBConnectString
 };

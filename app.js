@@ -14,7 +14,7 @@ var methodOverride = require("method-override");
 
 //mongoose setup
 mongoose.set("useUnifiedTopology", true);
-mongoose.connect("mongodb://localhost/cloud_demo", {useNewUrlParser: true}); // use for mongoose to use sth
+mongoose.connect(exeParas.mongoDBConnectString, {useNewUrlParser: true});
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
