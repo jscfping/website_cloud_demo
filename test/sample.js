@@ -10,7 +10,6 @@ function add(a, b) {
 
 // 測試 add 函式
 describe('add', function () {
-  I
   it('adds 1 + 2 to equal 3', function () {
     assert.strictEqual(add(1, 2), 3);
   });
