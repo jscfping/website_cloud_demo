@@ -1,12 +1,12 @@
 var mongoose = require("mongoose");
-var dbfunc = require("./models/dbfunc");
+var dbfunc = require("../../models/dbfunc");
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect("mongodb://localhost/cloud_demo", {useNewUrlParser: true});
 
 
-var User = require("./models/user");
-var Dealterm = require("./models/deallog/dealterm");
-var Dealrecipe = require("./models/deallog/dealrecipe");
+var User = require("../../models/user");
+var Dealterm = require("../../models/deallog/dealterm");
+var Dealrecipe = require("../../models/deallog/dealrecipe");
 
 User.find({}, function(err, allusers){
 	if (err) {

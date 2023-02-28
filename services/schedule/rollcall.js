@@ -1,6 +1,5 @@
-var config = require("../config");
-var dbfunc = require("../dbfunc");
-var Event = require("../event");
+var config = require("../../models/config");
+var Event = require("../../models/event");
 var rollCall = {};
 var counts;
 

@@ -1,7 +1,7 @@
 
 var dbfunc = require("./dbfunc");
-var apiCWB = require("./api/apicwb");
-var rollCall = require("./api/rollcall");
+var apiCWB = require("../services/api/apicwb");
+var rollCall = require("../services/schedule/rollcall");
 
 
 var Event = require("./event");
