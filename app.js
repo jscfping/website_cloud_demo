@@ -1,5 +1,9 @@
 const exeParas = require("./exeParas");
-
+const {
+    ServiceType,
+    ServiceCollection,
+    ServiceProvider
+} = require("./serviceProvider");
 
 var express = require("express");
 var app = express();
@@ -47,6 +51,20 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+
+
+
+const APIUser = require("./routes/api/user");
+const aServiceCollection = new ServiceCollection();
+aServiceCollection.addScopedClass("APIUser", APIUser)
+    .addSingletonObject("passport", passport);
+aServiceProvider = ServiceProvider.build(aServiceCollection);
+
+
+
+
+
 
 
 // res.locals is form express
@@ -153,9 +171,8 @@ var userRoutes = require("./routes/user");
 app.use("/user", userRoutes);
 
 
-
-const apiUserRoutes = require("./routes/api/user");
-app.use(apiUserRoutes.prePath, apiUserRoutes.router);
+const apiUser = aServiceProvider.useScope("APIUser");
+app.use(apiUser.prePath, apiUser.exportRouter());
 
 //articles routes (pbulic) would to be rebase between public and private
 //it can be add a function to judge entry to redirect proper place to make code more dry
