@@ -16,6 +16,9 @@
                                 <label>密碼</label>
                                 <input type="password" name="password" placeholder="password" class="form-control">
                                 <button type="submit" class="btn btn-primary">註冊</button>
+                                <input type="button" value="註冊(使用api)" onclick="registerUserAsync()"
+                                    class="btn btn-secondary">
+
                             </div>
                         </form>
                     </div>
@@ -25,5 +28,41 @@
         </div>
 
     </div>
+
+
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.11.0/qs.min.js"></script>
+
+    <script>
+
+        function getApplyForm() {
+            return $("form")[0];
+        }
+
+        async function testApiAsync() {
+            const res = await axios.get("../api/users?u=tester");
+            console.log(res.data.message);
+        }
+
+        async function registerUserAsync() {
+            try {
+                const postData = {
+                    username: getApplyForm().username.value,
+                    password: getApplyForm().password.value,
+                };
+                const res = await axios.post(
+                    "../api/users",
+                    Qs.stringify(postData)
+                );
+                globalThis.location = res.data.goto;
+            }
+            catch (e) {
+                alert(`error occurs:${e.message}`)
+            }
+        }
+    </script>
+
+
 
     <%- include("../partials/footer") %>

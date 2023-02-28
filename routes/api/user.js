@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 
 const middleware = require("../../models/middleware");
-
+var Event = require("../../models/event");
 
 
 class APIUser {
@@ -16,6 +16,8 @@ class APIUser {
     }
 
     exportRouter() {
+        const that = this;
+
         router.get("/", (req, res) => {
             res.json({ message: `hello, ${req.query.u}!` });
         });
@@ -23,21 +25,15 @@ class APIUser {
         router.post("/",
             middleware.register(),
             function (req, res) {
-                //http://www.passportjs.org/docs/authenticate/
-                //JS' closure
-                this._passport().authenticate("local")(req, res, function () {
-
-
-                    res.json({ message: `registered.` });
-
-                    // Event.findOne({ eid: "1001" }, (err, found) => {
-                    //     if (err) {
-                    //         res.send("not find event page...");
-                    //     }
-                    //     else {
-                    //         res.redirect("/events/" + found._id);
-                    //     }
-                    // })
+                that._passport().authenticate("local")(req, res, function () {
+                    Event.findOne({ eid: "1001" }, (err, found) => {
+                        if (err) {
+                            res.json({ goto: `/` });
+                        }
+                        else {
+                            res.json({ goto: `/events/${found._id}` });
+                        }
+                    })
 
                 });
             }
