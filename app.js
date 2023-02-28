@@ -152,6 +152,11 @@ app.get("/logout", function(req, res){
 var userRoutes = require("./routes/user");
 app.use("/user", userRoutes);
 
+
+
+const apiUserRoutes = require("./routes/api/user");
+app.use(apiUserRoutes.prePath, apiUserRoutes.router);
+
 //articles routes (pbulic) would to be rebase between public and private
 //it can be add a function to judge entry to redirect proper place to make code more dry
 var articlesRoutes = require("./routes/articles");
