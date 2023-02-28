@@ -33,6 +33,20 @@ class ServiceCollection {
         return this;
     }
 
+    addSingletonObject(name, aObj) {
+        if (this._map[name]) throw new Error(`${name} already exists!`);
+        if (typeof (aObj) !== "object") throw new Error(`not object!`);
+
+        const DummyClass = function () {
+            return aObj;
+        }
+
+        this._singletons[name] = DummyClass;
+        this._map[name] = ServiceType.Singleton;
+
+        return this;
+    }
+
 
     addScopedClass(name, aClass) {
         if (this._map[name]) throw new Error(`${name} already exists!`);
