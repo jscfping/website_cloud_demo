@@ -113,26 +113,6 @@ app.get("/register", function (req, res) {
     res.render("users/register");
 });
 
-// handle sign up logic
-app.post("/register",
-    middleware.register(),
-    function (req, res) {
-        //http://www.passportjs.org/docs/authenticate/
-        //JS' closure
-        passport.authenticate("local")(req, res, function () {
-            Event.findOne({ eid: "1001" }, (err, found) => {
-                if (err) {
-                    res.send("not find event page...");
-                }
-                else {
-                    res.redirect("/events/" + found._id);
-                }
-            })
-
-        });
-    }
-);
-
 
 
 // show login form
