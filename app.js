@@ -14,11 +14,11 @@ var methodOverride = require("method-override");
 
 //mongoose setup
 mongoose.set("useUnifiedTopology", true);
-mongoose.connect(exeParas.mongoDBConnectString, {useNewUrlParser: true});
+mongoose.connect(exeParas.mongoDBConnectString, { useNewUrlParser: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function() {
-	console.log("mongoose........connected");
+db.once("open", function () {
+    console.log("mongoose........connected");
 });
 
 // mongoose schema setup
@@ -30,7 +30,7 @@ var Event = require("./models/event");
 
 
 // set up express
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
@@ -52,9 +52,9 @@ passport.deserializeUser(User.deserializeUser());
 // res.locals is form express
 // for every req, would add a currentUser to res in ejs (locals)
 // req.user is from passport for a authenticated user
-app.use(function(req, res, next){
-	res.locals.currentUser = req.user;
-	next();
+app.use(function (req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
 });
 
 
@@ -64,7 +64,7 @@ var dbfunc = require("./models/dbfunc");
 var reset_rebot = require("./services//schedule/reset_rebot");
 var config = require("./models/config");
 
-if(config.isAutoReset){
+if (config.isAutoReset) {
     reset_rebot.tmr();
 }
 
@@ -75,14 +75,14 @@ if(config.isAutoReset){
 //
 //
 //routes
-app.get("/",function(req, res){
-	dbfunc.findsByProp(Event, {}).then((founds)=>{
-		res.render("index", {events: founds, nextTime: reset_rebot.nextTime});
-	}
-	).catch((e)=>{
-		console.log(err);
-		res.send(e);
-	});
+app.get("/", function (req, res) {
+    dbfunc.findsByProp(Event, {}).then((founds) => {
+        res.render("index", { events: founds, nextTime: reset_rebot.nextTime });
+    }
+    ).catch((e) => {
+        console.log(err);
+        res.send(e);
+    });
 });
 
 
@@ -91,60 +91,60 @@ app.get("/",function(req, res){
 
 
 // show register form
-app.get("/register", function(req, res){
-    res.render("users/register"); 
+app.get("/register", function (req, res) {
+    res.render("users/register");
 });
 
 // handle sign up logic
 app.post("/register",
-	middleware.register(),
-	function(req, res){
-		//http://www.passportjs.org/docs/authenticate/
-		//JS' closure
-		passport.authenticate("local")(req, res, function(){
-			Event.findOne({eid: "1001"}, (err, found)=>{
-				if(err){
-					res.send("not find event page...");
-				}
-				else{
-					res.redirect("/events/" + found._id);
-				}
-			})
-			
-		});
-	}
+    middleware.register(),
+    function (req, res) {
+        //http://www.passportjs.org/docs/authenticate/
+        //JS' closure
+        passport.authenticate("local")(req, res, function () {
+            Event.findOne({ eid: "1001" }, (err, found) => {
+                if (err) {
+                    res.send("not find event page...");
+                }
+                else {
+                    res.redirect("/events/" + found._id);
+                }
+            })
+
+        });
+    }
 );
 
 
 
 // show login form
-app.get("/login", function(req, res){
-    if(req.user){
-        res.redirect("/"); 
-	}else{
-		res.render("users/login"); 
-	}
+app.get("/login", function (req, res) {
+    if (req.user) {
+        res.redirect("/");
+    } else {
+        res.render("users/login");
+    }
 });
 
 // handling login logic
 app.post("/login",
-	passport.authenticate("local",{
-            successRedirect: "/user",
-            failureRedirect: "/login"
-        }
-	),
-    function(req, res){
-});
+    passport.authenticate("local", {
+        successRedirect: "/user",
+        failureRedirect: "/login"
+    }
+    ),
+    function (req, res) {
+    });
 
 
 // logout route
-app.get("/logout", function(req, res){
-	if(req.user){
-		req.logout();
-        res.redirect("/"); 
-	}else{
-		res.redirect("/login"); 
-	}
+app.get("/logout", function (req, res) {
+    if (req.user) {
+        req.logout();
+        res.redirect("/");
+    } else {
+        res.redirect("/login");
+    }
 });
 
 
@@ -179,26 +179,26 @@ app.use("/shoppinglist", shoppinglistRoutes);
 //
 //
 app.post("/checkout",
-	middleware.isLogIned,
+    middleware.isLogIned,
     middleware.chkOrderReq,
-	middleware.makeOrder,
-	middleware.handDealRecipe,
-	middleware.passItemToUser,
+    middleware.makeOrder,
+    middleware.handDealRecipe,
+    middleware.passItemToUser,
     middleware.chargeUser,
-	middleware.finishOrder,
-	function(req, res){
+    middleware.finishOrder,
+    function (req, res) {
 
-	res.redirect("/user");
+        res.redirect("/user");
 
-});
+    });
 
 
 //events routes
-var eventRoutes    = require("./routes/events");
+var eventRoutes = require("./routes/events");
 app.use("/events", eventRoutes);
 
 //backstage routes
-var backstageRoutes    = require("./routes/backstage");
+var backstageRoutes = require("./routes/backstage");
 app.use("/backstage", backstageRoutes);
 
 
@@ -207,53 +207,53 @@ app.use("/backstage", backstageRoutes);
 // others
 //
 //
-app.get("/getcash", middleware.isLogIned, function(req, res){
-	
-	if(req.user){ //to be rebase
-	    User.findOne({_id: req.user._id}, function(err, found){
-	    	if(err){
-	    		console.log(err);
-				res.send("find user id err");
-	    	}
-	    	else{
-	    		found.cash += 1000;
-				
-				User.updateOne({_id: req.user._id}, found, function(err, sign){
-	                if(err){
-						console.log();
-	                    res.send("database update error");
-	                } else {
-	                    res.redirect("/");
-	                }
-	            });
+app.get("/getcash", middleware.isLogIned, function (req, res) {
 
-	    	}
-	    });
-	}
+    if (req.user) { //to be rebase
+        User.findOne({ _id: req.user._id }, function (err, found) {
+            if (err) {
+                console.log(err);
+                res.send("find user id err");
+            }
+            else {
+                found.cash += 1000;
+
+                User.updateOne({ _id: req.user._id }, found, function (err, sign) {
+                    if (err) {
+                        console.log();
+                        res.send("database update error");
+                    } else {
+                        res.redirect("/");
+                    }
+                });
+
+            }
+        });
+    }
 
 });
 
 
 
 app.get("/replenishment",
-	middleware.isLogIned,
-	middleware.isStockOut,
-	middleware.replenishment,
-	function(req, res){
-	    res.redirect("/");
+    middleware.isLogIned,
+    middleware.isStockOut,
+    middleware.replenishment,
+    function (req, res) {
+        res.redirect("/");
+    });
+
+
+
+app.get("*", function (req, res) {
+    res.send("not found...");
 });
 
 
 
-app.get("*",function(req, res){
-	 res.send("not found...");
-});
 
-
-
-
-app.listen(exeParas.executingPort, function(){
-   console.log(`The Server is running at: http://localhost:${exeParas.executingPort}`);
+app.listen(exeParas.executingPort, function () {
+    console.log(`The Server is running at: http://localhost:${exeParas.executingPort}`);
 });
 
 
