@@ -34,6 +34,51 @@ describe("ServiceCollection create", () => {
         });
     });
 
+
+    describe("addSingletonObject", () => {
+
+        let aObj;
+
+
+        beforeEach(function () {
+            aObj = {
+                a: 3,
+                b: 4,
+                getSum: function () {
+                    return this.a + this.b;
+                }
+            };
+        });
+
+        it("add a object should be Singleton to the collection", () => {
+            const collection = new ServiceCollection();
+            collection.addSingletonObject("Obj", aObj);
+
+            const result = collection.getType("Obj");
+
+            assert.equal(result, ServiceType.Singleton);
+        });
+
+        it("should throw an error if object name already exists in the collection", () => {
+            const collection = new ServiceCollection();
+            collection.addSingletonObject("Obj", aObj);
+
+            assert.throws(() => {
+                collection.addSingletonObject("Obj", aObj);
+            }, /already exists/);
+        });
+
+        it("should throw an error if the second parameter is not a object", () => {
+            const collection = new ServiceCollection();
+
+            assert.throws(() => {
+                collection.addSingletonObject("Obj", class TestClass { });
+            }, /not object/);
+        });
+    });
+
+
+
     describe("addScopedClass", () => {
         it("should add a scoped class to the collection", () => {
             const collection = new ServiceCollection();
@@ -222,6 +267,14 @@ describe("ServiceProvider create", () => {
 describe("ServiceProvider use", () => {
 
 
+    const aObj = {
+        a: 3,
+        b: 4,
+        getSum: function () {
+            return this.a + this.b;
+        }
+    };
+
     class Singleton1 {
         constructor({ Singleton2 }) {
             console.log("Singleton1 created...");
@@ -378,9 +431,16 @@ describe("ServiceProvider use", () => {
             aServiceCollection
                 .addSingletonClass("Singleton1", Singleton1)
                 .addSingletonClass("Singleton2", Singleton2)
-                .addSingletonClass("Singleton3", Singleton3);
+                .addSingletonClass("Singleton3", Singleton3)
+                .addSingletonObject("Obj", aObj);
 
             aServiceProvider = ServiceProvider.build(aServiceCollection);
+        });
+
+        it("Singleton object should be same", function () {
+            const newObj = aServiceProvider.useSingleton("Obj");
+
+            assert.strictEqual(aObj, newObj);
         });
 
         it("Singleton1 should be created once", function () {
