@@ -55,12 +55,13 @@ passport.deserializeUser(User.deserializeUser());
 
 
 
-const APIUser = require("./routes/api/user");
+const UserController = require("./routes/api/UserController");
+const APIUser = require("./routes/api/APIUser");
 const aServiceCollection = new ServiceCollection();
 aServiceCollection.addScopedClass("APIUser", APIUser)
     .addSingletonObject("passport", passport);
 aServiceProvider = ServiceProvider.build(aServiceCollection);
-
+var aUserController = new UserController(aServiceProvider);
 
 
 
@@ -151,8 +152,7 @@ var userRoutes = require("./routes/user");
 app.use("/user", userRoutes);
 
 
-const apiUser = aServiceProvider.useScope("APIUser");
-app.use(apiUser.prePath, apiUser.exportRouter());
+app.use(aUserController.prePath, aUserController.exportRouter());
 
 //articles routes (pbulic) would to be rebase between public and private
 //it can be add a function to judge entry to redirect proper place to make code more dry
